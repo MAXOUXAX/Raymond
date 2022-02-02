@@ -30,13 +30,13 @@ public class CommandDefault {
     private void power(User user, MessageChannel channel, Message message, String[] args){
         MessageEmbed helperEmbed = commandMap.getHelpEmbed("power");
         if(args.length == 0 || message.getMentionedUsers().size() == 0){
-            channel.sendMessage(helperEmbed).queue();
+            channel.sendMessageEmbeds(helperEmbed).queue();
         }
         int power = 0;
         try{
             power = Integer.parseInt(args[0]);
         }catch(NumberFormatException nfe){
-            channel.sendMessage(helperEmbed).queue();
+            channel.sendMessageEmbeds(helperEmbed).queue();
         }
 
         User target = message.getMentionedUsers().get(0);
@@ -48,7 +48,7 @@ public class CommandDefault {
     private void game(TextChannel textChannel, JDA jda, String[] args){
         MessageEmbed helperEmbed = commandMap.getHelpEmbed("game");
         if(args.length == 0){
-            textChannel.sendMessage(helperEmbed).queue();
+            textChannel.sendMessageEmbeds(helperEmbed).queue();
         }else {
             StringBuilder builder = new StringBuilder();
             for (String str : args) {
@@ -127,7 +127,7 @@ public class CommandDefault {
                 .addField("A rejoint Discord le", discordJoinDate, true)
                 .addField("URL de l'avatar", avatar, true)
                 .setThumbnailUrl(avatar);
-        textChannel.sendMessage(em.build()).queue();
+        textChannel.sendMessageEmbeds(em.build()).queue();
     }
 
     @Command(name = "ping", description = "Permet de récupérer le ping du bot", type = Command.ExecutorType.USER, example = "ping", help = "ping")
@@ -144,7 +144,7 @@ public class CommandDefault {
             builder.setColor(Color.GREEN);
             builder.setDescription("Bon ping");
         }
-        textChannel.sendMessage(builder.build()).queue();
+        textChannel.sendMessageEmbeds(builder.build()).queue();
     }
 
 }

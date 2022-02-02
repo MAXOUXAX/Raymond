@@ -23,7 +23,7 @@ public class CommandVersion {
             builder.setColor(3447003);
             builder.addField("Je suis en version", raymond.getVersion(), true);
             builder.addField("Je gère", commandMap.getDiscordCommands().size()+" commandes Discord", true);
-            channel.sendMessage(builder.build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue();
         }catch (Exception e) {
             raymond.getErrorHandler().handleException(e);
             channel.sendMessage("An error occured > " + e.getMessage()).queue();

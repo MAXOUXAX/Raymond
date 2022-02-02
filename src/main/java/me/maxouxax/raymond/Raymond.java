@@ -122,7 +122,7 @@ public class Raymond implements Runnable{
 
     public static void main(String[] args) {
         try {
-            me.maxouxax.raymond.Raymond Raymond = new me.maxouxax.raymond.Raymond();
+            Raymond Raymond = new Raymond();
             new Thread(Raymond, "raymond").start();
         } catch (LoginException | IllegalArgumentException | NullPointerException | IOException | InterruptedException | SQLException e) {
             e.printStackTrace();
@@ -141,7 +141,7 @@ public class Raymond implements Runnable{
         return configurationManager;
     }
 
-    public static me.maxouxax.raymond.Raymond getInstance(){
+    public static Raymond getInstance(){
         return instance;
     }
 

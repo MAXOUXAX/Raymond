@@ -22,7 +22,7 @@ public class CommandEmbed {
         try {
             MessageEmbed em = commandMap.getHelpEmbed("embed");
             if (args.length == 0) {
-                textChannel.sendMessage(em).queue();
+                textChannel.sendMessageEmbeds(em).queue();
             } else {
                 StringBuilder str = new StringBuilder();
 
@@ -31,7 +31,7 @@ public class CommandEmbed {
                 }
 
                 if (!str.toString().contains("-²")) {
-                    textChannel.sendMessage(em).queue();
+                    textChannel.sendMessageEmbeds(em).queue();
                     return;
                 }
 
@@ -56,7 +56,7 @@ public class CommandEmbed {
                 if (imageURL != null) {
                     embedCrafter.setImageUrl(imageURL);
                 }
-                textChannel.sendMessage(embedCrafter.build()).queue();
+                textChannel.sendMessageEmbeds(embedCrafter.build()).queue();
             }
         }catch (Exception e){
             raymond.getErrorHandler().handleException(e);

@@ -1,6 +1,9 @@
 package me.maxouxax.raymond.commands;
 
-import me.maxouxax.raymond.commands.register.discord.*;
+import me.maxouxax.raymond.commands.register.discord.CommandDefault;
+import me.maxouxax.raymond.commands.register.discord.CommandEmbed;
+import me.maxouxax.raymond.commands.register.discord.CommandVersion;
+import me.maxouxax.raymond.commands.register.discord.HelpCommand;
 import me.maxouxax.raymond.database.DatabaseManager;
 import me.maxouxax.raymond.utils.EmbedCrafter;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -29,8 +32,7 @@ public final class CommandMap {
         registerCommands(new CommandDefault(this),
                 new CommandEmbed(this),
                 new CommandVersion(this),
-                new HelpCommand(this),
-                new CommandForward(this)
+                new HelpCommand(this)
                 );
         loadPower();
     }
@@ -112,7 +114,7 @@ public final class CommandMap {
     public int getPowerUser(Guild guild, User user)
     {
         if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)) return 10000;
-        return powers.containsKey(user.getIdLong()) ? powers.get(user.getIdLong()) : 0;
+        return powers.getOrDefault(user.getIdLong(), 0);
     }
 
     public String getDiscordTag() {
@@ -172,7 +174,7 @@ public final class CommandMap {
     private Object[] getDiscordCommand(String command){
         String[] commandSplit = command.split(" ");
         String[] args = new String[commandSplit.length-1];
-        for(int i = 1; i < commandSplit.length; i++) args[i-1] = commandSplit[i];
+        System.arraycopy(commandSplit, 1, args, 0, commandSplit.length - 1);
         SimpleCommand simpleCommand = discordCommands.get(commandSplit[0]);
         return new Object[]{simpleCommand, args};
     }

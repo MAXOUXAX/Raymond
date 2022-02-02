@@ -5,7 +5,6 @@ import me.maxouxax.raymond.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
@@ -27,7 +26,6 @@ public class DiscordListener implements EventListener {
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if(event instanceof MessageReceivedEvent) onMessage((MessageReceivedEvent)event);
-        if(event instanceof PrivateMessageReceivedEvent) onDM((PrivateMessageReceivedEvent)event);
         if(event instanceof MessageReactionAddEvent) onReactionAdd((MessageReactionAddEvent)event);
         if(event instanceof MessageReactionRemoveEvent) onReactionRemove((MessageReactionRemoveEvent)event);
     }
@@ -40,6 +38,10 @@ public class DiscordListener implements EventListener {
 
 
     private void onMessage(MessageReceivedEvent event){
+        if(event.isFromType(ChannelType.PRIVATE)){
+            onDM(event);
+            return;
+        }
         if(event.getMessage().getAuthor().isBot()
                 || event.getAuthor().equals(event.getJDA().getSelfUser())
                 || event.getChannelType() == ChannelType.PRIVATE)return;
@@ -54,14 +56,14 @@ public class DiscordListener implements EventListener {
         }
     }
 
-    private void onDM(PrivateMessageReceivedEvent event){
+    private void onDM(MessageReceivedEvent event){
         if(event.getAuthor().equals(event.getJDA().getSelfUser())) return;
         EmbedCrafter embedCrafter = new EmbedCrafter();
         embedCrafter.setColor(Color.RED.getRGB());
         embedCrafter.setTitle("Private message received of " + event.getAuthor().getName());
         embedCrafter.setThumbnailUrl(raymond.getConfigurationManager().getStringValue("cancelIcon"));
         embedCrafter.setDescription("Cette action est **IMPOSSIBLE**");
-        event.getChannel().sendMessage(embedCrafter.build()).queue();
+        event.getChannel().sendMessageEmbeds(embedCrafter.build()).queue();
     }
 
 }
