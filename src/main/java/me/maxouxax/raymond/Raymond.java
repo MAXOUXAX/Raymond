@@ -42,7 +42,7 @@ public class Raymond implements Runnable{
         DatabaseManager.initDatabaseConnection();
 
         String string = new File(Raymond.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
-        string = string.replaceAll("Vortex-", "")
+        string = string.replaceAll("Raymond-", "")
                 .replaceAll(".jar", "");
         this.version = string;
 
