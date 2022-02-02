@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.commands.register.discord;
 
+import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.Command;
 import me.maxouxax.raymond.commands.CommandMap;
 import me.maxouxax.raymond.utils.EmbedCrafter;
@@ -9,12 +10,12 @@ import net.dv8tion.jda.api.entities.User;
 
 public class CommandEmbed {
 
-    private final me.maxouxax.raymond.Raymond raymond;
+    private final Raymond raymond;
     private final CommandMap commandMap;
 
     public CommandEmbed(CommandMap commandMap){
         this.commandMap = commandMap;
-        this.raymond = me.maxouxax.raymond.Raymond.getInstance();
+        this.raymond = Raymond.getInstance();
     }
 
     @Command(name="embed",type = Command.ExecutorType.ALL,power = 100,help = ".embed <titre>-²<description>-²<image (url)>",example = ".embed Ceci est une annonce-²Juste pour vous dire que les bananes c'est assez bon mais que la raclette reste au dessus.-²https://lien-de-l-image.fr/image32.png")

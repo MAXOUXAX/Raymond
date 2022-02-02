@@ -1,13 +1,15 @@
 package me.maxouxax.raymond.utils;
 
+import me.maxouxax.raymond.Raymond;
+
 import java.util.Arrays;
 
 public class ErrorHandler {
 
-    private final me.maxouxax.raymond.Raymond raymond;
+    private final Raymond raymond;
 
     public ErrorHandler() {
-        this.raymond = me.maxouxax.raymond.Raymond.getInstance();
+        this.raymond = Raymond.getInstance();
     }
 
     public void handleException(Throwable exception){

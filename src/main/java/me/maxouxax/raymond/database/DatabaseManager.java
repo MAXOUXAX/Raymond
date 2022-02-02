@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.database;
 
+import me.maxouxax.raymond.Raymond;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
@@ -28,7 +29,7 @@ public class DatabaseManager {
             databaseAccess = new DatabaseAccess(databaseCredentials);
             databaseAccess.initPool();
         }catch (IOException e){
-            me.maxouxax.raymond.Raymond.getInstance().getErrorHandler().handleException(e);
+            Raymond.getInstance().getErrorHandler().handleException(e);
         }
 
     }

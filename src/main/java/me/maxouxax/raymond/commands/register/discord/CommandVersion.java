@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.commands.register.discord;
 
+import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.Command;
 import me.maxouxax.raymond.commands.CommandMap;
 import me.maxouxax.raymond.utils.EmbedCrafter;
@@ -7,12 +8,12 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 
 public class CommandVersion {
 
-    private final me.maxouxax.raymond.Raymond raymond;
+    private final Raymond raymond;
     private final CommandMap commandMap;
 
     public CommandVersion(CommandMap commandMap) {
         this.commandMap = commandMap;
-        this.raymond = me.maxouxax.raymond.Raymond.getInstance();
+        this.raymond = Raymond.getInstance();
     }
 
     @Command(name="version",type= Command.ExecutorType.USER,description="Affiche les informations sur la version du BOT", help = "version", example = "version")

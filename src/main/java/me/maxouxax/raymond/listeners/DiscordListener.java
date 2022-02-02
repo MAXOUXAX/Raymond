@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.listeners;
 
+import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.CommandMap;
 import me.maxouxax.raymond.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -16,11 +17,11 @@ import java.util.concurrent.TimeUnit;
 public class DiscordListener implements EventListener {
 
     private final CommandMap commandMap;
-    private final me.maxouxax.raymond.Raymond raymond;
+    private final Raymond raymond;
 
     public DiscordListener(CommandMap commandMap){
         this.commandMap = commandMap;
-        this.raymond = me.maxouxax.raymond.Raymond.getInstance();
+        this.raymond = Raymond.getInstance();
     }
 
     @Override

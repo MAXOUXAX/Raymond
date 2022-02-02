@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.commands;
 
+import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.register.discord.CommandDefault;
 import me.maxouxax.raymond.commands.register.discord.CommandEmbed;
 import me.maxouxax.raymond.commands.register.discord.CommandVersion;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 public final class CommandMap {
 
-    private final me.maxouxax.raymond.Raymond raymond;
+    private final Raymond raymond;
 
     private final Map<String, Integer> powers = new HashMap<>();
 
@@ -28,7 +29,7 @@ public final class CommandMap {
     private final String discordTag = ".";
 
     public CommandMap() {
-        this.raymond = me.maxouxax.raymond.Raymond.getInstance();
+        this.raymond = Raymond.getInstance();
         registerCommands(new CommandDefault(this),
                 new CommandEmbed(this),
                 new CommandVersion(this),

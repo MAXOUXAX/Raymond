@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.utils;
 
+import me.maxouxax.raymond.Raymond;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -94,7 +95,7 @@ public class EmbedCrafter {
     }
 
     public MessageEmbed build(){
-        me.maxouxax.raymond.Raymond raymond = me.maxouxax.raymond.Raymond.getInstance();
+        Raymond raymond = Raymond.getInstance();
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder
             .setColor(color)

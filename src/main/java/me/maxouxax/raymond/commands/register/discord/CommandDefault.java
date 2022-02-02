@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.commands.register.discord;
 
+import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.Command;
 import me.maxouxax.raymond.commands.CommandMap;
 import me.maxouxax.raymond.utils.EmbedCrafter;
@@ -13,12 +14,12 @@ import java.util.List;
 
 public class CommandDefault {
 
-    private final me.maxouxax.raymond.Raymond raymond;
+    private final Raymond raymond;
     private final CommandMap commandMap;
 
     public CommandDefault(CommandMap commandMap){
         this.commandMap = commandMap;
-        this.raymond = me.maxouxax.raymond.Raymond.getInstance();
+        this.raymond = Raymond.getInstance();
     }
 
     @Command(name="stop",type= Command.ExecutorType.CONSOLE)

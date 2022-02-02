@@ -21,7 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class Raymond implements Runnable{
 
-    private static me.maxouxax.raymond.Raymond instance;
+    private static Raymond instance;
     private static JDA jda;
     private final CommandMap commandMap;
     private final Scanner scanner = new Scanner(System.in);
@@ -36,12 +36,12 @@ public class Raymond implements Runnable{
 
     public Raymond() throws LoginException, IllegalArgumentException, NullPointerException, IOException, InterruptedException, SQLException {
         instance = this;
-        this.logger = org.slf4j.LoggerFactory.getLogger(me.maxouxax.raymond.Raymond.class);
+        this.logger = org.slf4j.LoggerFactory.getLogger(Raymond.class);
         this.errorHandler = new ErrorHandler();
 
         DatabaseManager.initDatabaseConnection();
 
-        String string = new File(me.maxouxax.raymond.Raymond.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
+        String string = new File(Raymond.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
         string = string.replaceAll("Vortex-", "")
                 .replaceAll(".jar", "");
         this.version = string;
