@@ -10,7 +10,7 @@ public class DatabaseCredentials {
 
     public String toURI(){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("jdbc:mysql://")
+        stringBuilder.append("jdbc:mariadb://")
                 .append(host)
                 .append(":")
                 .append(port)
