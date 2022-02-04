@@ -1,55 +1,86 @@
 package me.maxouxax.raymond.commands;
 
 import me.maxouxax.raymond.Raymond;
+import me.maxouxax.raymond.commands.register.console.CommandConsoleSay;
 import me.maxouxax.raymond.commands.register.discord.CommandDefault;
-import me.maxouxax.raymond.commands.register.discord.CommandEmbed;
-import me.maxouxax.raymond.commands.register.discord.CommandVersion;
-import me.maxouxax.raymond.commands.register.discord.HelpCommand;
+import me.maxouxax.raymond.commands.slashannotations.InteractionListener;
+import me.maxouxax.raymond.commands.slashannotations.SimpleInteraction;
 import me.maxouxax.raymond.database.DatabaseManager;
 import me.maxouxax.raymond.utils.EmbedCrafter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.sql.Date;
 import java.sql.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public final class CommandMap {
 
     private final Raymond raymond;
 
-    private final Map<String, Integer> powers = new HashMap<>();
+    private final Map<String, Long> powers = new HashMap<>();
+
+    private final Map<String, java.util.Date> userIds = new HashMap<>();
+    private final List<String> giveawayUsersIds = new ArrayList<>();
 
     private final Map<String, SimpleCommand> discordCommands = new HashMap<>();
+    private final Map<String, SimpleConsoleCommand> consoleCommands = new HashMap<>();
+    private final Map<String, SimpleInteraction> interactions = new HashMap<>();
     private final String discordTag = ".";
 
     public CommandMap() {
         this.raymond = Raymond.getInstance();
-        registerCommands(new CommandDefault(this),
-                new CommandEmbed(this),
-                new CommandVersion(this),
-                new HelpCommand(this)
-                );
-        loadPower();
+
+        registerCommands(
+                new CommandConsoleSay(this),
+                new CommandDefault(this)
+        );
+
+        //registerInteraction(new SearchCommand(this));
+
+        load();
     }
 
-    private void loadPower()
-    {
+    private void load() {
         try {
             Connection connection = DatabaseManager.getDatabaseAccess().getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users");
 
             final ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 String id = resultSet.getString("id");
-                int power = resultSet.getInt("power");
+                long power = resultSet.getLong("power");
                 powers.put(id, power);
+            }
+
+            PreparedStatement preparedStatementKnownUsers = connection.prepareStatement("SELECT * FROM known_users");
+
+            final ResultSet resultSetKnownUsers = preparedStatementKnownUsers.executeQuery();
+
+            while (resultSetKnownUsers.next()) {
+                int userId = resultSetKnownUsers.getInt("user_id");
+                java.util.Date date = resultSetKnownUsers.getDate("updated_at");
+                userIds.put(String.valueOf(userId), date);
+            }
+
+            PreparedStatement preparedStatementGiveaways = connection.prepareStatement("SELECT * FROM giveaway");
+
+            final ResultSet resultSetGiveaways = preparedStatementGiveaways.executeQuery();
+
+            while (resultSetGiveaways.next()) {
+                int userId = resultSetGiveaways.getInt("user_id");
+                giveawayUsersIds.add(String.valueOf(userId));
             }
             connection.close();
         } catch (SQLException throwables) {
@@ -57,11 +88,11 @@ public final class CommandMap {
         }
     }
 
-    public void savePower(String id, int power) throws SQLException {
+    public void savePower(String id, long power) throws SQLException {
         Connection connection = DatabaseManager.getDatabaseAccess().getConnection();
-        if(power > 0) {
+        if (power > 0) {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET power = ?, updated_at = ? WHERE id = ?");
-            preparedStatement.setInt(1, power);
+            preparedStatement.setLong(1, power);
             preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
             preparedStatement.setString(3, id);
 
@@ -70,11 +101,11 @@ public final class CommandMap {
             if (updateCount < 1) {
                 PreparedStatement insertPreparedStatement = connection.prepareStatement("INSERT INTO users (id, power, updated_at) VALUES (?, ?, ?)");
                 insertPreparedStatement.setString(1, id);
-                insertPreparedStatement.setInt(2, power);
+                insertPreparedStatement.setLong(2, power);
                 insertPreparedStatement.setDate(3, new Date(System.currentTimeMillis()));
                 insertPreparedStatement.execute();
             }
-        }else{
+        } else {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE id = ?");
             preparedStatement.setString(1, id);
 
@@ -83,26 +114,25 @@ public final class CommandMap {
         connection.close();
     }
 
-    public MessageEmbed getHelpEmbed(String commandName) {
+    public MessageEmbed getHelpEmbed(String command) {
         try {
-            SimpleCommand command = discordCommands.get(commandName);
-            EmbedCrafter embedCrafter = new EmbedCrafter()
-                .setTitle("Aide » "+discordTag + commandName)
-                .setDescription(command.getDescription())
-                .addField(new MessageEmbed.Field("Utilisation:", discordTag+command.getHelp(), true))
-                .addField(new MessageEmbed.Field("Exemple:", discordTag+command.getExample(), true));
+            SimpleCommand command1 = discordCommands.get(command);
+            EmbedCrafter embedCrafter = new EmbedCrafter();
+            embedCrafter.setTitle("Aide » " + discordTag + command)
+                    .setDescription(command1.getDescription())
+                    .addField("Utilisation:", discordTag + command1.getHelp(), true)
+                    .addField("Exemple:", discordTag + command1.getExemple(), true);
             return embedCrafter.build();
-        }catch (Exception e){
+        } catch (Exception e) {
             raymond.getErrorHandler().handleException(e);
         }
         return new EmbedBuilder().build();
     }
 
-    public void setUserPower(User user, int power)
-    {
-        if(power == 0){
+    public void setUserPower(User user, long power) {
+        if (power == 0) {
             powers.remove(user.getId());
-        }else{
+        } else {
             powers.put(user.getId(), power);
         }
         try {
@@ -112,94 +142,166 @@ public final class CommandMap {
         }
     }
 
-    public int getPowerUser(Guild guild, User user)
-    {
-        if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)) return 10000;
-        return powers.getOrDefault(user.getIdLong(), 0);
+    public long getPowerUser(Guild guild, User user) {
+        if (guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)) return 150;
+        return powers.getOrDefault(user.getId(), 0L);
     }
 
     public String getDiscordTag() {
         return discordTag;
     }
 
-    public Collection<SimpleCommand> getDiscordCommands(){
+    public Collection<SimpleCommand> getDiscordCommands() {
         return discordCommands.values();
     }
 
-    public void registerCommands(Object...objects){
-        for(Object object : objects){
+    public Collection<SimpleConsoleCommand> getConsoleCommands() {
+        return consoleCommands.values();
+    }
+
+    public void registerCommands(Object... objects) {
+        for (Object object : objects) {
             registerCommand(object);
         }
     }
 
-    public void registerCommand(Object object){
-        for(Method method : object.getClass().getDeclaredMethods()){
-            if(method.isAnnotationPresent(Command.class)){
+    public void registerCommand(Object object) {
+        for (Method method : object.getClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Command.class)) {
                 Command command = method.getAnnotation(Command.class);
                 method.setAccessible(true);
-                SimpleCommand simpleCommand = new SimpleCommand(command.name(), command.description(), command.help(), command.example(), command.type(), object, method, command.power());
+                SimpleCommand simpleCommand = new SimpleCommand(command.name(), command.description(), command.help(), command.example(), object, method, command.power(), command.guildOnly());
                 discordCommands.put(command.name(), simpleCommand);
+            } else if (method.isAnnotationPresent(ConsoleCommand.class)) {
+                ConsoleCommand command = method.getAnnotation(ConsoleCommand.class);
+                method.setAccessible(true);
+                SimpleConsoleCommand simpleConsoleCommand = new SimpleConsoleCommand(command.name(), command.description(), command.help(), object, method);
+                consoleCommands.put(command.name(), simpleConsoleCommand);
             }
         }
     }
 
-    public void discordCommandConsole(String command){
-        Object[] object = getDiscordCommand(command);
-        if(object[0] == null || ((SimpleCommand)object[0]).getExecutorType() == Command.ExecutorType.USER){
-            raymond.getLogger().warn("Commande inconnue.");
+    public void registerInteraction(Object object) {
+        for (Method method : object.getClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(InteractionListener.class)) {
+                InteractionListener interactionListener = method.getAnnotation(InteractionListener.class);
+                method.setAccessible(true);
+                SimpleInteraction simpleInteraction = new SimpleInteraction(interactionListener.id(), object, method);
+                interactions.put(interactionListener.id(), simpleInteraction);
+            }
+        }
+    }
+
+    private Object[] getConsoleCommand(String command) {
+        String[] commandSplit = command.split(" ");
+        String[] args = new String[commandSplit.length - 1];
+        for (int i = 1; i < commandSplit.length; i++) args[i - 1] = commandSplit[i];
+        SimpleConsoleCommand simpleConsoleCommand = consoleCommands.get(commandSplit[0]);
+        return new Object[]{simpleConsoleCommand, args};
+    }
+
+    public void consoleCommand(String command) {
+        SimpleConsoleCommand simpleConsoleCommand = (SimpleConsoleCommand) getConsoleCommand(command)[0];
+
+        try {
+            executeConsoleCommand(simpleConsoleCommand, (String[]) getConsoleCommand(command)[1]);
+        } catch (Exception e) {
+            raymond.getLogger().error("La methode " + simpleConsoleCommand.getMethod().getName() + " n'est pas correctement initialisé. (" + e.getMessage() + ")");
+            raymond.getErrorHandler().handleException(e);
+        }
+    }
+
+    private void executeConsoleCommand(SimpleConsoleCommand simpleConsoleCommand, String[] args) throws Exception {
+        Parameter[] parameters = simpleConsoleCommand.getMethod().getParameters();
+        Object[] objects = new Object[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].getType() == String[].class) objects[i] = args;
+            else if (parameters[i].getType() == String.class) objects[i] = simpleConsoleCommand.getName();
+            else if (parameters[i].getType() == JDA.class) objects[i] = raymond.getJda();
+            else if (parameters[i].getType() == SimpleCommand.class) objects[i] = simpleConsoleCommand;
+        }
+        simpleConsoleCommand.getMethod().invoke(simpleConsoleCommand.getObject(), objects);
+    }
+
+    public void discordCommandUser(String command, SlashCommandInteractionEvent slashCommandEvent) {
+        SimpleCommand simpleCommand = (SimpleCommand) getDiscordCommand(command)[0];
+
+        if (simpleCommand.isGuildOnly() && !slashCommandEvent.isFromGuild() || simpleCommand.isGuildOnly() && slashCommandEvent.isFromGuild() && simpleCommand.getPower() > getPowerUser(slashCommandEvent.getGuild(), slashCommandEvent.getUser())) {
+            slashCommandEvent.reply("Vous ne pouvez pas utiliser cette commande.").setEphemeral(true).queue();
             return;
         }
-        try{
-            executeDiscordCommand(((SimpleCommand)object[0]), command, (String[])object[1], null);
-        }catch(Exception e){
-            raymond.getLogger().error("La commande "+command+" ne s'est pas exécutée à cause d'un problème sur la méthode "+((SimpleCommand)object[0]).getMethod().getName()+" qui ne s'est pas correctement exécutée.");
+
+        try {
+            executeDiscordCommand(simpleCommand, slashCommandEvent.getOptions(), slashCommandEvent);
+        } catch (Exception e) {
+            raymond.getLogger().error("La methode " + simpleCommand.getMethod().getName() + " n'est pas correctement initialisé. (" + e.getMessage() + ")");
             raymond.getErrorHandler().handleException(e);
         }
     }
 
-    public boolean discordCommandUser(User user, String command, Message message){
-        Object[] object = getDiscordCommand(command);
-        if(object[0] == null || ((SimpleCommand)object[0]).getExecutorType() == Command.ExecutorType.CONSOLE) return false;
-
-        if(((SimpleCommand) object[0]).getPower() > getPowerUser(message.getGuild(), message.getAuthor())) return false;
-
-        try{
-            executeDiscordCommand(((SimpleCommand)object[0]), command,(String[])object[1], message);
-        }catch(Exception e){
-            raymond.getLogger().error("La methode "+((SimpleCommand)object[0]).getMethod().getName()+" n'est pas correctement initialisé. ("+e.getMessage()+")");
-            raymond.getErrorHandler().handleException(e);
-        }
-        return true;
-    }
-
-    private Object[] getDiscordCommand(String command){
+    private Object[] getDiscordCommand(String command) {
         String[] commandSplit = command.split(" ");
-        String[] args = new String[commandSplit.length-1];
-        System.arraycopy(commandSplit, 1, args, 0, commandSplit.length - 1);
+        String[] args = new String[commandSplit.length - 1];
+        for (int i = 1; i < commandSplit.length; i++) args[i - 1] = commandSplit[i];
         SimpleCommand simpleCommand = discordCommands.get(commandSplit[0]);
         return new Object[]{simpleCommand, args};
     }
 
-    public SimpleCommand getDiscordSimpleCommand(String command){
+    public SimpleCommand getDiscordSimpleCommand(String command) {
         return discordCommands.get(command);
     }
 
-    private void executeDiscordCommand(SimpleCommand simpleCommand, String command, String[] args, Message message) throws Exception{
+    private void executeDiscordCommand(SimpleCommand simpleCommand, List<OptionMapping> args, SlashCommandInteractionEvent slashCommandEvent) throws Exception {
         Parameter[] parameters = simpleCommand.getMethod().getParameters();
         Object[] objects = new Object[parameters.length];
-        for(int i = 0; i < parameters.length; i++){
-            if(parameters[i].getType() == String[].class) objects[i] = args;
-            else if(parameters[i].getType() == User.class) objects[i] = message == null ? null : message.getAuthor();
-            else if(parameters[i].getType() == TextChannel.class) objects[i] = message == null ? null : message.getTextChannel();
-            else if(parameters[i].getType() == PrivateChannel.class) objects[i] = message == null ? null : message.getPrivateChannel();
-            else if(parameters[i].getType() == Guild.class) objects[i] = message == null ? null : message.getGuild();
-            else if(parameters[i].getType() == String.class) objects[i] = command;
-            else if(parameters[i].getType() == Message.class) objects[i] = message;
-            else if(parameters[i].getType() == JDA.class) objects[i] = raymond.getJda();
-            else if(parameters[i].getType() == MessageChannel.class) objects[i] = message == null ? null : message.getChannel();
-            else if(parameters[i].getType() == SimpleCommand.class) objects[i] = simpleCommand;
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].getType() == List[].class) objects[i] = args;
+            else if (parameters[i].getType() == User.class) objects[i] = slashCommandEvent.getUser();
+            else if (parameters[i].getType() == Member.class) objects[i] = slashCommandEvent.getMember();
+            else if (parameters[i].getType() == TextChannel.class) objects[i] = slashCommandEvent.getTextChannel();
+            else if (parameters[i].getType() == PrivateChannel.class)objects[i] = slashCommandEvent.getPrivateChannel();
+            else if (parameters[i].getType() == Guild.class) objects[i] = slashCommandEvent.getGuild();
+            else if (parameters[i].getType() == String.class) objects[i] = slashCommandEvent.getName();
+            else if (parameters[i].getType() == SlashCommandInteractionEvent.class) objects[i] = slashCommandEvent;
+            else if (parameters[i].getType() == JDA.class) objects[i] = raymond.getJda();
+            else if (parameters[i].getType() == SimpleCommand.class) objects[i] = simpleCommand;
         }
         simpleCommand.getMethod().invoke(simpleCommand.getObject(), objects);
+    }
+
+    public void updateCommands() {
+        List<CommandData> commands = new ArrayList<>();
+        discordCommands.forEach((s, simpleCommand) -> {
+            SlashCommandData commandData = Commands.slash(simpleCommand.getName(), simpleCommand.getDescription());
+            if (simpleCommand.getOptionsData().length != 0) commandData = commandData.addOptions(simpleCommand.getOptionsData());
+            if (simpleCommand.getSubcommandsData().length != 0)
+                commandData = commandData.addSubcommands(simpleCommand.getSubcommandsData());
+            if (simpleCommand.getSubcommandsGroups().length != 0)
+                commandData = commandData.addSubcommandGroups(simpleCommand.getSubcommandsGroups());
+
+            commands.add(commandData);
+        });
+        raymond.getJda().updateCommands().addCommands(commands).queue();
+    }
+
+    public void discordInteraction(String id, MessageContextInteractionEvent messageContextInteractionEvent) {
+        try {
+            SimpleInteraction simpleInteraction = interactions.get(id);
+            Parameter[] parameters = simpleInteraction.getMethod().getParameters();
+            Object[] objects = new Object[parameters.length];
+            for (int i = 0; i < parameters.length; i++) {
+                if (parameters[i].getType() == User.class) objects[i] = messageContextInteractionEvent.getUser();
+                else if (parameters[i].getType() == TextChannel.class) objects[i] = messageContextInteractionEvent.getTextChannel();
+                else if (parameters[i].getType() == PrivateChannel.class)objects[i] = messageContextInteractionEvent.getPrivateChannel();
+                else if (parameters[i].getType() == Guild.class) objects[i] = messageContextInteractionEvent.getGuild();
+                else if (parameters[i].getType() == MessageContextInteractionEvent.class) objects[i] = messageContextInteractionEvent;
+                else if (parameters[i].getType() == JDA.class) objects[i] = raymond.getJda();
+                else if (parameters[i].getType() == SimpleInteraction.class) objects[i] = simpleInteraction;
+            }
+            simpleInteraction.getMethod().invoke(simpleInteraction.getObject(), objects);
+        } catch (Exception e) {
+            raymond.getErrorHandler().handleException(e);
+        }
     }
 
 }

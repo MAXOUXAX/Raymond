@@ -102,7 +102,7 @@ public class Raymond implements Runnable{
         while (running) {
             if (scanner.hasNextLine()) {
                 String nextLine = scanner.nextLine();
-                commandMap.discordCommandConsole(nextLine);
+                commandMap.consoleCommand(nextLine);
             }
         }
 

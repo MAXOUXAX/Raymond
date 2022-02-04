@@ -1,14 +1,9 @@
 package me.maxouxax.raymond.commands.register.discord;
 
-import me.maxouxax.raymond.commands.Command;
+import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.CommandMap;
-import me.maxouxax.raymond.commands.SimpleCommand;
-import me.maxouxax.raymond.utils.EmbedCrafter;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.internal.entities.UserImpl;
+import me.maxouxax.raymond.commands.ConsoleCommand;
+import me.maxouxax.raymond.commands.SimpleConsoleCommand;
 
 public class HelpCommand {
 
@@ -18,25 +13,30 @@ public class HelpCommand {
         this.commandMap = commandMap;
     }
 
-    @Command(name="help",type= Command.ExecutorType.USER,description="Affiche l'entièreté des commandes disponibles", help = "help", example = "help")
+    /*@Command(name="help", description="Affiche l'entièreté des commandes disponibles", help = ".help", example = ".help")
     private void help(User user, MessageChannel channel, Guild guild){
-        EmbedCrafter builder = new EmbedCrafter();
-        builder.setTitle("Aide » Liste des commandes");
-        builder.setColor(3447003);
+        EmbedCrafter embedCrafter = new EmbedCrafter();
+        embedCrafter.setTitle("Aide » Liste des commandes")
+            .setColor(3447003);
 
         for(SimpleCommand command : commandMap.getDiscordCommands()){
-            if(command.getExecutorType() == Command.ExecutorType.CONSOLE) continue;
-
             if(guild != null && command.getPower() > commandMap.getPowerUser(guild, user)) continue;
 
-            builder.addField(new MessageEmbed.Field(command.getName(), command.getDescription(), true));
+            embedCrafter.addField(command.getName(), command.getDescription(), true);
         }
 
         if(!user.hasPrivateChannel()) user.openPrivateChannel().complete();
-        ((UserImpl)user).getPrivateChannel().sendMessageEmbeds(builder.build()).queue();
+        ((UserImpl)user).getPrivateChannel().sendMessage(embedCrafter.build()).queue();
 
         channel.sendMessage(user.getAsMention()+", veuillez regarder vos message privés.").queue();
 
+    }*/
+
+    @ConsoleCommand(name="help", description="Affiche l'entièreté des commandes disponibles", help = "help")
+    private void help(){
+        for(SimpleConsoleCommand command : commandMap.getConsoleCommands()){
+            Raymond.getInstance().getLogger().info(command.getName() + " - " + command.getDescription() + " - " + command.getHelp(), true);
+        }
     }
 
 }

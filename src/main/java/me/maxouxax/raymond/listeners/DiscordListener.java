@@ -5,6 +5,8 @@ import me.maxouxax.raymond.commands.CommandMap;
 import me.maxouxax.raymond.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
@@ -12,7 +14,6 @@ import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.concurrent.TimeUnit;
 
 public class DiscordListener implements EventListener {
 
@@ -37,6 +38,15 @@ public class DiscordListener implements EventListener {
     private void onReactionRemove(MessageReactionRemoveEvent event) {
     }
 
+    private void onCommand(SlashCommandInteractionEvent event) {
+        //TODO: event.deferReply(true).queue();
+        commandMap.discordCommandUser(event.getName(), event);
+    }
+
+    private void onInteraction(MessageContextInteractionEvent event) {
+        //TODO: event.deferReply(true).queue();
+        commandMap.discordInteraction(event.getId(), event);
+    }
 
     private void onMessage(MessageReceivedEvent event){
         if(event.isFromType(ChannelType.PRIVATE)){
@@ -46,15 +56,6 @@ public class DiscordListener implements EventListener {
         if(event.getMessage().getAuthor().isBot()
                 || event.getAuthor().equals(event.getJDA().getSelfUser())
                 || event.getChannelType() == ChannelType.PRIVATE)return;
-
-        String message = event.getMessage().getContentDisplay();
-        if (message.startsWith(commandMap.getDiscordTag())) {
-            message = message.replaceFirst(commandMap.getDiscordTag(), "");
-            if (commandMap.discordCommandUser(event.getAuthor(), message, event.getMessage())) {
-                event.getChannel().sendTyping().queue();
-                event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-            }
-        }
     }
 
     private void onDM(MessageReceivedEvent event){
