@@ -30,6 +30,8 @@ public class DiscordListener implements EventListener {
         if(event instanceof MessageReceivedEvent) onMessage((MessageReceivedEvent)event);
         if(event instanceof MessageReactionAddEvent) onReactionAdd((MessageReactionAddEvent)event);
         if(event instanceof MessageReactionRemoveEvent) onReactionRemove((MessageReactionRemoveEvent)event);
+        if(event instanceof SlashCommandInteractionEvent) onCommand((SlashCommandInteractionEvent)event);
+        if(event instanceof MessageContextInteractionEvent) onInteraction((MessageContextInteractionEvent)event);
     }
 
     private void onReactionAdd(MessageReactionAddEvent event) {

@@ -26,11 +26,6 @@ public class CommandDefault {
         this.bot = Raymond.getInstance();
     }
 
-    @ConsoleCommand(name="stop")
-    private void stop(){
-        bot.setRunning(false);
-    }
-
     @Option(name = "power", type = OptionType.INTEGER, isRequired = true, description = "Power à attribuer")
     @Option(name = "utilisateur", type = OptionType.USER, isRequired = true, description = "Utilisateur auquel attribuer le power")
     @Command(name="power", power=150, description = "Permet de définir le power d'un utilisateur", example = ".power 150 @MAXOUXAX", help = ".power <power> <@user>")

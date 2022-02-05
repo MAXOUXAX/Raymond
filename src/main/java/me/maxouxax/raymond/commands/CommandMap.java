@@ -1,8 +1,12 @@
 package me.maxouxax.raymond.commands;
 
 import me.maxouxax.raymond.Raymond;
+import me.maxouxax.raymond.commands.register.console.CommandConsoleHelp;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleSay;
+import me.maxouxax.raymond.commands.register.console.CommandConsoleStop;
 import me.maxouxax.raymond.commands.register.discord.CommandDefault;
+import me.maxouxax.raymond.commands.register.discord.CommandEmbed;
+import me.maxouxax.raymond.commands.register.discord.CommandVersion;
 import me.maxouxax.raymond.commands.slashannotations.InteractionListener;
 import me.maxouxax.raymond.commands.slashannotations.SimpleInteraction;
 import me.maxouxax.raymond.database.DatabaseManager;
@@ -41,8 +45,12 @@ public final class CommandMap {
         this.raymond = Raymond.getInstance();
 
         registerCommands(
+                new CommandConsoleStop(),
+                new CommandConsoleHelp(this),
                 new CommandConsoleSay(this),
-                new CommandDefault(this)
+                new CommandDefault(this),
+                new CommandEmbed(this),
+                new CommandVersion(this)
         );
 
         //registerInteraction(new SearchCommand(this));
@@ -262,9 +270,6 @@ public final class CommandMap {
                 commandData = commandData.addSubcommandGroups(simpleCommand.getSubcommandsGroups());
 
             commands.add(commandData);
-        });
-        raymond.getJda().getGuilds().forEach(guild -> {
-            guild.updateCommands().addCommands(commands).queue();
         });
         raymond.getJda().updateCommands().addCommands(commands).queue();
     }

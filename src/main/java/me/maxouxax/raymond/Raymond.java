@@ -58,6 +58,7 @@ public class Raymond implements Runnable{
         logger.info("> Libraries loaded! Loading JDA...");
 
         loadDiscord();
+        commandMap.updateCommands();
         logger.info("> JDA loaded!");
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(16);
