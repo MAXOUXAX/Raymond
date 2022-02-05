@@ -30,9 +30,6 @@ public final class CommandMap {
 
     private final Map<String, Long> powers = new HashMap<>();
 
-    private final Map<String, java.util.Date> userIds = new HashMap<>();
-    private final List<String> giveawayUsersIds = new ArrayList<>();
-
     private final Map<String, SimpleCommand> discordCommands = new HashMap<>();
     private final Map<String, SimpleConsoleCommand> consoleCommands = new HashMap<>();
     private final Map<String, SimpleInteraction> interactions = new HashMap<>();
@@ -62,25 +59,6 @@ public final class CommandMap {
                 String id = resultSet.getString("id");
                 long power = resultSet.getLong("power");
                 powers.put(id, power);
-            }
-
-            PreparedStatement preparedStatementKnownUsers = connection.prepareStatement("SELECT * FROM known_users");
-
-            final ResultSet resultSetKnownUsers = preparedStatementKnownUsers.executeQuery();
-
-            while (resultSetKnownUsers.next()) {
-                int userId = resultSetKnownUsers.getInt("user_id");
-                java.util.Date date = resultSetKnownUsers.getDate("updated_at");
-                userIds.put(String.valueOf(userId), date);
-            }
-
-            PreparedStatement preparedStatementGiveaways = connection.prepareStatement("SELECT * FROM giveaway");
-
-            final ResultSet resultSetGiveaways = preparedStatementGiveaways.executeQuery();
-
-            while (resultSetGiveaways.next()) {
-                int userId = resultSetGiveaways.getInt("user_id");
-                giveawayUsersIds.add(String.valueOf(userId));
             }
             connection.close();
         } catch (SQLException throwables) {

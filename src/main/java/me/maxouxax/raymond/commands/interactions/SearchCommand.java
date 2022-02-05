@@ -1,14 +1,8 @@
 package me.maxouxax.raymond.commands.interactions;
 
-import me.maxouxax.boulobot.commands.CommandMap;
-import me.maxouxax.boulobot.commands.slashannotations.InteractionListener;
-import me.maxouxax.boulobot.music.MusicCommand;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-
 public class SearchCommand {
 
-    private final CommandMap commandMap;
+    /*private final CommandMap commandMap;
 
     public SearchCommand(CommandMap commandMap) {
         this.commandMap = commandMap;
@@ -28,5 +22,6 @@ public class SearchCommand {
         buttonClickEvent.getMessage().delete().queue();
         buttonClickEvent.reply("Recherche annulée !").setEphemeral(true).queue();
     }
+    */
 
 }
