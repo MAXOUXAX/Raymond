@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
@@ -39,7 +40,8 @@ public class Raymond implements Runnable{
         this.logger = org.slf4j.LoggerFactory.getLogger(Raymond.class);
         this.errorHandler = new ErrorHandler();
 
-        DatabaseManager.initDatabaseConnection();
+        DatabaseManager.initDatabaseConnection(Paths.get("configs/database.yml"));
+        DatabaseManager.initDatabaseConnection(Paths.get("configs/database_mongo.yml"));
 
         String string = new File(Raymond.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
         string = string.replaceAll("Raymond-", "")
@@ -113,7 +115,7 @@ public class Raymond implements Runnable{
         logger.info("> Scanner closed!");
         jda.shutdown();
         logger.info("> JDA shutdowned!");
-        DatabaseManager.closeDatabaseConnection();
+        DatabaseManager.closeDatabasesConnection();
         logger.info("> Closed database connection!");
         logger.info("--------------- STOPPING ---------------");
         logger.info("Arrêt du BOT réussi");

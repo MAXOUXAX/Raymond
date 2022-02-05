@@ -1,12 +1,14 @@
-package me.maxouxax.raymond.database;
+package me.maxouxax.raymond.database.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import me.maxouxax.raymond.database.DatabaseCredentials;
+import me.maxouxax.raymond.database.IDatabaseAccess;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseAccess {
+public class DatabaseAccess implements IDatabaseAccess {
 
     private final DatabaseCredentials databaseCredentials;
     private HikariDataSource hikariDataSource;
@@ -30,10 +32,17 @@ public class DatabaseAccess {
         this.hikariDataSource = new HikariDataSource(hikariConfig);
     }
 
+    @Override
+    public String getType() {
+        return databaseCredentials.getType();
+    }
+
+    @Override
     public void initPool(){
         setupHikariCP();
     }
 
+    @Override
     public void closePool(){
         this.hikariDataSource.close();
     }

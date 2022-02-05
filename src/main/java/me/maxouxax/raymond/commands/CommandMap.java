@@ -6,6 +6,8 @@ import me.maxouxax.raymond.commands.register.discord.CommandDefault;
 import me.maxouxax.raymond.commands.slashannotations.InteractionListener;
 import me.maxouxax.raymond.commands.slashannotations.SimpleInteraction;
 import me.maxouxax.raymond.database.DatabaseManager;
+import me.maxouxax.raymond.database.Databases;
+import me.maxouxax.raymond.database.sql.DatabaseAccess;
 import me.maxouxax.raymond.utils.EmbedCrafter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -50,7 +52,8 @@ public final class CommandMap {
 
     private void load() {
         try {
-            Connection connection = DatabaseManager.getDatabaseAccess().getConnection();
+            DatabaseAccess databaseAccess = (DatabaseAccess) DatabaseManager.getDatabaseAccess(Databases.MARIADB.getName());
+            Connection connection = databaseAccess.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users");
 
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -67,7 +70,8 @@ public final class CommandMap {
     }
 
     public void savePower(String id, long power) throws SQLException {
-        Connection connection = DatabaseManager.getDatabaseAccess().getConnection();
+        DatabaseAccess databaseAccess = (DatabaseAccess) DatabaseManager.getDatabaseAccess(Databases.MARIADB.getName());
+        Connection connection = databaseAccess.getConnection();
         if (power > 0) {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET power = ?, updated_at = ? WHERE id = ?");
             preparedStatement.setLong(1, power);
@@ -258,6 +262,9 @@ public final class CommandMap {
                 commandData = commandData.addSubcommandGroups(simpleCommand.getSubcommandsGroups());
 
             commands.add(commandData);
+        });
+        raymond.getJda().getGuilds().forEach(guild -> {
+            guild.updateCommands().addCommands(commands).queue();
         });
         raymond.getJda().updateCommands().addCommands(commands).queue();
     }

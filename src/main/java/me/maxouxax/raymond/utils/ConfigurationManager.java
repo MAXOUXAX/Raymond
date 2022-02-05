@@ -1,6 +1,8 @@
 package me.maxouxax.raymond.utils;
 
 import me.maxouxax.raymond.database.DatabaseManager;
+import me.maxouxax.raymond.database.Databases;
+import me.maxouxax.raymond.database.sql.DatabaseAccess;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +24,8 @@ public class ConfigurationManager {
     }
 
     public void loadData() throws SQLException {
-        Connection connection = DatabaseManager.getDatabaseAccess().getConnection();
+        DatabaseAccess databaseAccess = (DatabaseAccess) DatabaseManager.getDatabaseAccess(Databases.MARIADB.getName());
+        Connection connection = databaseAccess.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM settings");
 
         final ResultSet resultSet = preparedStatement.executeQuery();

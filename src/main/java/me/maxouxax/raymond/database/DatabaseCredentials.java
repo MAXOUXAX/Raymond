@@ -2,21 +2,16 @@ package me.maxouxax.raymond.database;
 
 public class DatabaseCredentials {
 
+    private String type;
     private String host;
     private String user;
     private String password;
     private String databaseName;
+    private String uri;
     private int port;
 
-    public String toURI(){
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("jdbc:mariadb://")
-                .append(host)
-                .append(":")
-                .append(port)
-                .append("/")
-                .append(databaseName);
-        return stringBuilder.toString();
+    public String getType() {
+        return type;
     }
 
     public String getHost() {
@@ -35,8 +30,16 @@ public class DatabaseCredentials {
         return databaseName;
     }
 
+    public String getUri() {
+        return uri;
+    }
+
     public int getPort() {
         return port;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setHost(String host) {
@@ -55,7 +58,20 @@ public class DatabaseCredentials {
         this.databaseName = databaseName;
     }
 
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
     public void setPort(int port) {
         this.port = port;
     }
+
+    public boolean isValid() {
+        return !host.equals("null");
+    }
+
+    public String toURI(){
+        return uri.replace("{host}", host).replace("{port}", port + "").replace("{databaseName}", databaseName).replace("{user}", user).replace("{password}", password);
+    }
+
 }
