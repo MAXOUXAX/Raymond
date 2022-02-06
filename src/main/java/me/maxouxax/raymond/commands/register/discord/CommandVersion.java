@@ -25,10 +25,10 @@ public class CommandVersion {
                 .setColor(3447003)
                 .addField("Je suis en version", raymond.getVersion(), true)
                 .addField("Je gère", commandMap.getDiscordCommands().size()+" commandes Discord", true);
-            slashCommandEvent.replyEmbeds(embedCrafter.build()).queue();
+            slashCommandEvent.getHook().sendMessageEmbeds(embedCrafter.build()).queue();
         }catch (Exception e) {
             raymond.getErrorHandler().handleException(e);
-            slashCommandEvent.reply("An error occured. > " + e.getMessage()).queue();
+            slashCommandEvent.getHook().sendMessage("An error occured. > " + e.getMessage()).queue();
         }
     }
 

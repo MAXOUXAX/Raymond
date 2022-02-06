@@ -41,12 +41,12 @@ public class DiscordListener implements EventListener {
     }
 
     private void onCommand(SlashCommandInteractionEvent event) {
-        //TODO: event.deferReply(true).queue();
+        event.deferReply(true).queue();
         commandMap.discordCommandUser(event.getName(), event);
     }
 
     private void onInteraction(MessageContextInteractionEvent event) {
-        //TODO: event.deferReply(true).queue();
+        event.deferReply(true).queue();
         commandMap.discordInteraction(event.getId(), event);
     }
 

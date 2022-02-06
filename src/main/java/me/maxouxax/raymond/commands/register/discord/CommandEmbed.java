@@ -36,7 +36,7 @@ public class CommandEmbed {
         if (!image.equals("")) {
             embedCrafter.setImageUrl(image);
         }
-        slashCommandEvent.replyEmbeds(embedCrafter.build()).queue();
+        slashCommandEvent.getHook().sendMessageEmbeds(embedCrafter.build()).queue();
     }
 
 }

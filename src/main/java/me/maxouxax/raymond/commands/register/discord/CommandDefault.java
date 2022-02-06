@@ -33,14 +33,14 @@ public class CommandDefault {
         long power = slashCommandEvent.getOption("power").getAsLong();
         Member member = slashCommandEvent.getOption("utilisateur").getAsMember();
         commandMap.setUserPower(member.getUser(), power);
-        slashCommandEvent.reply("Le power de "+member.getAsMention()+" est maintenant de "+power).setEphemeral(true).queue();
+        slashCommandEvent.getHook().sendMessage("Le power de "+member.getAsMention()+" est maintenant de "+power).setEphemeral(true).queue();
     }
 
     @Option(name = "nom-du-jeu", description = "Nom du jeu", type = OptionType.STRING, isRequired = true)
     @Command(name="game",power=100,description = "Permet de modifier le jeu du BOT.", help = ".game <jeu>", example = ".game planter des tomates")
     private void game(TextChannel textChannel, JDA jda, SlashCommandInteractionEvent slashCommandEvent){
         jda.getPresence().setActivity(Activity.playing(slashCommandEvent.getOption("nom-du-jeu").getAsString()));
-        slashCommandEvent.reply("Jeu mis à jour avec succès !").setEphemeral(true).queue();
+        slashCommandEvent.getHook().sendMessage("Jeu mis à jour avec succès !").setEphemeral(true).queue();
     }
 
     @Option(name = "nombre-de-messages", description = "Nombre de messages à supprimer", type = OptionType.INTEGER, isRequired = true)
@@ -48,12 +48,12 @@ public class CommandDefault {
     private void delete(TextChannel textChannel, JDA jda, SlashCommandInteractionEvent slashCommandEvent){
         long messagesToDelete = slashCommandEvent.getOption("nombre-de-messages").getAsLong();
         if(messagesToDelete > 100 || messagesToDelete < 2){
-            slashCommandEvent.reply("Dû à une limitation de Discord, le nombre de messages à supprimer doit être compris entre 2 et 100").setEphemeral(true).queue();
+            slashCommandEvent.getHook().sendMessage("Dû à une limitation de Discord, le nombre de messages à supprimer doit être compris entre 2 et 100").setEphemeral(true).queue();
         }else{
             MessageHistory history = new MessageHistory(textChannel);
             List<Message> messages = history.retrievePast(Math.toIntExact(messagesToDelete)).complete();
             textChannel.deleteMessages(messages).queue();
-            slashCommandEvent.reply("Suppression de " + messagesToDelete + " messages terminée !").queue();
+            slashCommandEvent.getHook().sendMessage("Suppression de " + messagesToDelete + " messages terminée !").queue();
         }
     }
 
@@ -104,7 +104,7 @@ public class CommandDefault {
             embedCrafter.setThumbnailUrl(avatar);
         }
 
-        slashCommandEvent.replyEmbeds(embedCrafter.build()).queue();
+        slashCommandEvent.getHook().sendMessageEmbeds(embedCrafter.build()).queue();
     }
 
     @Command(name = "ping", description = "Permet de récupérer le ping du bot", example = ".ping", help = ".ping")
@@ -121,7 +121,7 @@ public class CommandDefault {
             embedCrafter.setColor(Color.GREEN);
             embedCrafter.setDescription("Bon ping");
         }
-        slashCommandEvent.replyEmbeds(embedCrafter.build()).queue();
+        slashCommandEvent.getHook().sendMessageEmbeds(embedCrafter.build()).queue();
     }
 
     @ConsoleCommand(name = "sendrules", description = "Permet d'envoyer les règles dans le salon destiné.")
