@@ -251,6 +251,9 @@ public final class CommandMap {
 
             commands.add(commandData);
         });
+        raymond.getJda().getGuilds().forEach(guild -> {
+            guild.updateCommands().addCommands(commands).queue();
+        });
         raymond.getJda().updateCommands().addCommands(commands).queue();
     }
 
