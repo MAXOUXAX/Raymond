@@ -4,6 +4,7 @@ import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleHelp;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleSay;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleStop;
+import me.maxouxax.raymond.commands.register.discord.CommandArchive;
 import me.maxouxax.raymond.commands.register.discord.CommandDefault;
 import me.maxouxax.raymond.commands.register.discord.CommandEmbed;
 import me.maxouxax.raymond.commands.register.discord.CommandVersion;
@@ -47,7 +48,8 @@ public final class CommandMap {
                 new CommandConsoleSay(this),
                 new CommandDefault(this),
                 new CommandEmbed(this),
-                new CommandVersion(this)
+                new CommandVersion(this),
+                new CommandArchive()
         );
 
         //registerInteraction(new SearchCommand(this));

@@ -128,8 +128,8 @@ public class Raymond implements Runnable{
 
     public static void main(String[] args) {
         try {
-            Raymond Raymond = new Raymond();
-            new Thread(Raymond, "raymond").start();
+            Raymond raymond = new Raymond();
+            new Thread(raymond, "raymond").start();
         } catch (LoginException | IllegalArgumentException | NullPointerException | IOException | InterruptedException | SQLException e) {
             e.printStackTrace();
         }
