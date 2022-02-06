@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConfigurationManager {
+public class GlobalConfigManager {
 
     private final Map<String, String> configKeys = new HashMap<>();
 
-    public ConfigurationManager() {
+    public GlobalConfigManager() {
         try {
             loadData();
         } catch (SQLException sqlException) {

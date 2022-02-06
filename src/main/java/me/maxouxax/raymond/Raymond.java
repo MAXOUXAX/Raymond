@@ -3,8 +3,8 @@ package me.maxouxax.raymond;
 import me.maxouxax.raymond.commands.CommandMap;
 import me.maxouxax.raymond.database.DatabaseManager;
 import me.maxouxax.raymond.listeners.DiscordListener;
-import me.maxouxax.raymond.utils.ConfigurationManager;
 import me.maxouxax.raymond.utils.ErrorHandler;
+import me.maxouxax.raymond.utils.GlobalConfigManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -28,7 +28,7 @@ public class Raymond implements Runnable{
     private final Scanner scanner = new Scanner(System.in);
     private final Logger logger;
     private final ErrorHandler errorHandler;
-    private final ConfigurationManager configurationManager;
+    private final GlobalConfigManager globalConfigManager;
 
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -48,7 +48,7 @@ public class Raymond implements Runnable{
                 .replaceAll(".jar", "");
         this.version = string;
 
-        this.configurationManager = new ConfigurationManager();
+        this.globalConfigManager = new GlobalConfigManager();
 
         logger.info("--------------- STARTING ---------------");
 
@@ -68,7 +68,7 @@ public class Raymond implements Runnable{
     }
 
     private void loadDiscord() throws LoginException, InterruptedException {
-        jda = JDABuilder.create(configurationManager.getStringValue("botToken"), GatewayIntent.GUILD_MESSAGES,
+        jda = JDABuilder.create(globalConfigManager.getStringValue("botToken"), GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                 GatewayIntent.DIRECT_MESSAGE_TYPING,
                 GatewayIntent.DIRECT_MESSAGES,
@@ -82,7 +82,7 @@ public class Raymond implements Runnable{
                 GatewayIntent.GUILD_VOICE_STATES)
                 .build();
         jda.addEventListener(new DiscordListener(commandMap));
-        jda.getPresence().setActivity(Activity.playing(configurationManager.getStringValue("gameName")));
+        jda.getPresence().setActivity(Activity.playing(globalConfigManager.getStringValue("gameName")));
         jda.awaitReady();
     }
 
@@ -140,8 +140,8 @@ public class Raymond implements Runnable{
         return version;
     }
 
-    public ConfigurationManager getConfigurationManager() {
-        return configurationManager;
+    public GlobalConfigManager getConfigurationManager() {
+        return globalConfigManager;
     }
 
     public static Raymond getInstance(){

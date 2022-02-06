@@ -26,7 +26,7 @@ public class DatabaseManager {
             yaml.setBeanAccess(BeanAccess.FIELD);
 
             databaseCredentials = yaml.loadAs(reader, DatabaseCredentials.class);
-            if(databaseCredentials.getHost().equalsIgnoreCase("none")){
+            if(!databaseCredentials.isValid()){
                 throw new SQLException("Database is not configured in " + path.getFileName());
             }
             IDatabaseAccess iDatabaseAccess = Databases.valueOf(databaseCredentials.getType()).getClassType().getConstructor(DatabaseCredentials.class).newInstance(databaseCredentials);

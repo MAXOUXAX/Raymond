@@ -12,8 +12,6 @@ import me.maxouxax.raymond.commands.slashannotations.SimpleInteraction;
 import me.maxouxax.raymond.database.DatabaseManager;
 import me.maxouxax.raymond.database.Databases;
 import me.maxouxax.raymond.database.sql.DatabaseAccess;
-import me.maxouxax.raymond.utils.EmbedCrafter;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -39,7 +37,6 @@ public final class CommandMap {
     private final Map<String, SimpleCommand> discordCommands = new HashMap<>();
     private final Map<String, SimpleConsoleCommand> consoleCommands = new HashMap<>();
     private final Map<String, SimpleInteraction> interactions = new HashMap<>();
-    private final String discordTag = ".";
 
     public CommandMap() {
         this.raymond = Raymond.getInstance();
@@ -104,21 +101,6 @@ public final class CommandMap {
         connection.close();
     }
 
-    public MessageEmbed getHelpEmbed(String command) {
-        try {
-            SimpleCommand command1 = discordCommands.get(command);
-            EmbedCrafter embedCrafter = new EmbedCrafter();
-            embedCrafter.setTitle("Aide » " + discordTag + command)
-                    .setDescription(command1.getDescription())
-                    .addField("Utilisation:", discordTag + command1.getHelp(), true)
-                    .addField("Exemple:", discordTag + command1.getExemple(), true);
-            return embedCrafter.build();
-        } catch (Exception e) {
-            raymond.getErrorHandler().handleException(e);
-        }
-        return new EmbedBuilder().build();
-    }
-
     public void setUserPower(User user, long power) {
         if (power == 0) {
             powers.remove(user.getId());
@@ -135,10 +117,6 @@ public final class CommandMap {
     public long getPowerUser(Guild guild, User user) {
         if (guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)) return 150;
         return powers.getOrDefault(user.getId(), 0L);
-    }
-
-    public String getDiscordTag() {
-        return discordTag;
     }
 
     public Collection<SimpleCommand> getDiscordCommands() {
