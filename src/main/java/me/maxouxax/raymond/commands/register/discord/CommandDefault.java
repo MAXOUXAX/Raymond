@@ -111,7 +111,7 @@ public class CommandDefault {
     private void ping(TextChannel textChannel, User user, Guild guild, SlashCommandInteractionEvent slashCommandEvent){
         long ping = guild.getJDA().getGatewayPing();
         EmbedCrafter embedCrafter = new EmbedCrafter()
-                .setTitle("DiscordAPI ping", bot.getConfigurationManager().getStringValue("websiteUrl"))
+                .setTitle("DiscordAPI ping", bot.getGlobalConfigManager().getStringValue("websiteUrl"))
                 .setThumbnailUrl(user.getAvatarUrl()+"?size=256")
                 .addField(new MessageEmbed.Field("Ping", ping+"ms", true));
         if(ping > 300) {
@@ -127,13 +127,13 @@ public class CommandDefault {
     @ConsoleCommand(name = "sendrules", description = "Permet d'envoyer les règles dans le salon destiné.")
     private void sendRules(){
         EmbedCrafter embedCrafter = new EmbedCrafter()
-                .setImageUrl(bot.getConfigurationManager().getStringValue("rulesBanner")+"?size=1000")
+                .setImageUrl(bot.getGlobalConfigManager().getStringValue("rulesBanner")+"?size=1000")
                 .setColor(2895667)
                 .noFooter();
         EmbedCrafter embedCrafterRules = new EmbedCrafter()
                 .setTitle("Règles")
                 .setColor(15105570)
-                .setThumbnailUrl(bot.getConfigurationManager().getStringValue("rulesEmbedThumbnail"))
+                .setThumbnailUrl(bot.getGlobalConfigManager().getStringValue("rulesEmbedThumbnail"))
                 .setDescription(":small_orange_diamond: 1. **Traitez tout le monde avec respect**. " +
                         "Aucun harcèlement, sexisme, racisme ou discours de haine ne sera toléré. " +
                         "**Cette règle s'applique aux pseudonymes ainsi qu'aux statuts personnalisés !**\n\n" +
@@ -157,19 +157,19 @@ public class CommandDefault {
                 .noFooter();
         EmbedCrafter embedCrafterModeration = new EmbedCrafter()
                 .setTitle("Modération")
-                .setThumbnailUrl(bot.getConfigurationManager().getStringValue("rulesEmbedThumbnailModeration"))
+                .setThumbnailUrl(bot.getGlobalConfigManager().getStringValue("rulesEmbedThumbnailModeration"))
                 .setColor(3066993)
                 .setDescription("En rejoignant ce serveur Discord, vous acceptez que notre équipe de modération puisse vous sanctionner à tout moment si vous enfreignez une des règles précédemment citées")
                 .noFooter();
         EmbedCrafter embedCrafterWarning = new EmbedCrafter()
                 .setTitle("Attention !")
                 .setColor(15158332)
-                .setThumbnailUrl(bot.getConfigurationManager().getStringValue("rulesAttentionThumbnailUrl"))
+                .setThumbnailUrl(bot.getGlobalConfigManager().getStringValue("rulesAttentionThumbnailUrl"))
                 .setDescription("Si vous ne respectez pas une des règles précédemment citées, vous recevrez un avertissement.\n\nAu bout de 3 avertissements, vous serez banni définitivement du serveur par notre équipe de modération.\n\n**DE PLUS**, si vous commettez une sanction très grave, l'équipe de modération se réserve le droit de vous bannir sans avertissement.")
                 .forceFooter("Dernière mise à jour des règles");
         TextChannel textChannel = Objects.requireNonNull(bot.getJda()
-                .getGuildById(bot.getConfigurationManager().getStringValue("guildId")))
-                .getTextChannelById(bot.getConfigurationManager().getStringValue("rulesTextChannelId"));
+                .getGuildById(bot.getGlobalConfigManager().getStringValue("guildId")))
+                .getTextChannelById(bot.getGlobalConfigManager().getStringValue("rulesTextChannelId"));
         if(textChannel == null){
             bot.getErrorHandler().handleException(new Exception("textChannel == null (the textchannel id or the guildid (or both) may not have been set in the config file)"));
         }else {

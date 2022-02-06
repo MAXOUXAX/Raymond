@@ -137,7 +137,7 @@ public class EmbedCrafter {
         embedBuilder.setColor(color);
         if(footerText == null || !footerText.equals("noFooter")) {
             embedBuilder
-                    .setFooter(bot.getConfigurationManager().getStringValue("embedFooter"), bot.getConfigurationManager().getStringValue("embedIconUrl"))
+                    .setFooter(bot.getGlobalConfigManager().getStringValue("embedFooter"), bot.getGlobalConfigManager().getStringValue("embedIconUrl"))
                     .setTimestamp(OffsetDateTime.now(ZoneId.of("Europe/Paris")));
         }
         fields.forEach(embedBuilder::addField);

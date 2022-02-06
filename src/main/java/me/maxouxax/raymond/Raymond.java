@@ -3,6 +3,7 @@ package me.maxouxax.raymond;
 import me.maxouxax.raymond.commands.CommandMap;
 import me.maxouxax.raymond.database.DatabaseManager;
 import me.maxouxax.raymond.listeners.DiscordListener;
+import me.maxouxax.raymond.serversconfig.ServerConfigsManager;
 import me.maxouxax.raymond.utils.ErrorHandler;
 import me.maxouxax.raymond.utils.GlobalConfigManager;
 import net.dv8tion.jda.api.JDA;
@@ -29,6 +30,7 @@ public class Raymond implements Runnable{
     private final Logger logger;
     private final ErrorHandler errorHandler;
     private final GlobalConfigManager globalConfigManager;
+    private final ServerConfigsManager serverConfigsManager;
 
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -49,6 +51,7 @@ public class Raymond implements Runnable{
         this.version = string;
 
         this.globalConfigManager = new GlobalConfigManager();
+        this.serverConfigsManager = new ServerConfigsManager(this);
 
         logger.info("--------------- STARTING ---------------");
 
@@ -140,8 +143,12 @@ public class Raymond implements Runnable{
         return version;
     }
 
-    public GlobalConfigManager getConfigurationManager() {
+    public GlobalConfigManager getGlobalConfigManager() {
         return globalConfigManager;
+    }
+
+    public ServerConfigsManager getServerConfigsManager() {
+        return serverConfigsManager;
     }
 
     public static Raymond getInstance(){

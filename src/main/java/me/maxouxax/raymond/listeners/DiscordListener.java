@@ -65,7 +65,7 @@ public class DiscordListener implements EventListener {
         EmbedCrafter embedCrafter = new EmbedCrafter();
         embedCrafter.setColor(Color.RED.getRGB());
         embedCrafter.setTitle("Private message received of " + event.getAuthor().getName());
-        embedCrafter.setThumbnailUrl(raymond.getConfigurationManager().getStringValue("cancelIcon"));
+        embedCrafter.setThumbnailUrl(raymond.getGlobalConfigManager().getStringValue("cancelIcon"));
         embedCrafter.setDescription("Cette action est **IMPOSSIBLE**");
         event.getChannel().sendMessageEmbeds(embedCrafter.build()).queue();
     }

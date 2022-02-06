@@ -21,7 +21,7 @@ public class CommandVersion {
     private void version(TextChannel channel, SlashCommandInteractionEvent slashCommandEvent){
         try{
             EmbedCrafter embedCrafter = new EmbedCrafter();
-            embedCrafter.setTitle("Raymond by MAXOUXAX — Équipier polyvalent", raymond.getConfigurationManager().getStringValue("websiteUrl"))
+            embedCrafter.setTitle("Raymond by MAXOUXAX — Équipier polyvalent", raymond.getGlobalConfigManager().getStringValue("websiteUrl"))
                 .setColor(3447003)
                 .addField("Je suis en version", raymond.getVersion(), true)
                 .addField("Je gère", commandMap.getDiscordCommands().size()+" commandes Discord", true);
