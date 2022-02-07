@@ -26,7 +26,7 @@ public class CommandArchive {
             slashCommandInteractionEvent.getHook().sendMessage("This server is already archived.").queue();
         }else{
             slashCommandInteractionEvent.getHook().sendMessage("This server is now archived.").queue();
-            serverConfig.setArchived(true);
+            serverConfig.setArchived(true, true);
         }
         /*List<GuildChannel> channelsList = guild.getChannels();
         channelsList.forEach(channel -> {
@@ -47,7 +47,7 @@ public class CommandArchive {
             slashCommandInteractionEvent.getHook().sendMessage("This server is not archived.").queue();
         }else {
             slashCommandInteractionEvent.getHook().sendMessage("This server is no longer archived.").queue();
-            serverConfig.setArchived(false);
+            serverConfig.setArchived(false, true);
         }
         /*List<GuildChannel> channelsList = guild.getChannels();
         channelsList.forEach(channel -> {

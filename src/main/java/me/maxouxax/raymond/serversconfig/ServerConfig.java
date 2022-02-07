@@ -1,11 +1,13 @@
 package me.maxouxax.raymond.serversconfig;
 
 import me.maxouxax.raymond.Raymond;
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 public class ServerConfig {
 
-    @BsonProperty(value = "server_id")
+    @BsonProperty(value = "_id")
+    @BsonId
     private String serverId;
 
     @BsonProperty(value = "archived")
@@ -31,18 +33,34 @@ public class ServerConfig {
         return serverId;
     }
 
-    public void setServerId(String serverId) {
+    public void setServerId(String serverId, boolean save){
         this.serverId = serverId;
-        save();
+        if(save) save();
+    }
+
+    public void setArchived(boolean archived, boolean save){
+        this.archived = archived;
+        if(save) save();
     }
 
     public boolean isArchived() {
         return archived;
     }
 
+    /**
+     * Do not use this method, use {@link ServerConfig#setServerId(String, boolean)} instead if you want to save the server config
+     * @param serverId The server id
+     */
+    public void setServerId(String serverId) {
+        setServerId(serverId, false);
+    }
+
+    /**
+     * Do not use this method, use {@link ServerConfig#setServerId(String, boolean)} instead if you want to save the server config
+     * @param archived {@code true} if the server is archived, {@code false} otherwise
+     */
     public void setArchived(boolean archived) {
-        this.archived = archived;
-        save();
+        setArchived(archived, false);
     }
 
     public void save(){

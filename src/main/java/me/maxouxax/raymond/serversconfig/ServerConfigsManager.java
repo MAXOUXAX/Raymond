@@ -31,7 +31,13 @@ public class ServerConfigsManager {
     }
 
     public ServerConfig getServerConfig(String serverId){
-        return serverConfigs.stream().filter(serverConfig -> serverConfig.getServerId().equals(serverId)).findFirst().orElse(ServerConfig.getDefault(serverId));
+        if(serverConfigs.stream().anyMatch(serverConfig -> serverConfig.getServerId().equals(serverId))){
+            return serverConfigs.stream().filter(serverConfig -> serverConfig.getServerId().equals(serverId)).findFirst().orElse(null);
+        }else {
+            ServerConfig serverConfig = ServerConfig.getDefault(serverId);
+            serverConfigs.add(serverConfig);
+            return serverConfig;
+        }
     }
 
     public void saveServerConfig(ServerConfig serverConfig){
@@ -40,10 +46,10 @@ public class ServerConfigsManager {
         MongoClient mongoClient = this.databaseAccess.getMongoClient();
         MongoDatabase database = mongoClient.getDatabase("raymond");
         MongoCollection<ServerConfig> collection = database.getCollection("server_config", ServerConfig.class);
-        if(collection.countDocuments(Filters.eq("server_id", serverId)) == 0) {
+        if(collection.countDocuments(Filters.eq("_id", serverId)) == 0) {
             collection.insertOne(serverConfig);
         } else {
-            collection.replaceOne(Filters.eq("server_id", serverId), serverConfig);
+            collection.replaceOne(Filters.eq("_id", serverId), serverConfig);
         }
     }
 
