@@ -9,7 +9,7 @@ public class ServerConfig {
     private String serverId;
 
     @BsonProperty(value = "archived")
-    private Boolean archived;
+    private boolean archived;
 
     /**
      * Default constructor for MongoDB
@@ -18,7 +18,7 @@ public class ServerConfig {
     public ServerConfig() {
     }
 
-    public ServerConfig(String serverId, Boolean archived) {
+    public ServerConfig(String serverId, boolean archived) {
         this.serverId = serverId;
         this.archived = archived;
     }
@@ -40,7 +40,7 @@ public class ServerConfig {
         return archived;
     }
 
-    public void setArchived(Boolean archived) {
+    public void setArchived(boolean archived) {
         this.archived = archived;
         save();
     }

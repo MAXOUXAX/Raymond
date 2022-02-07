@@ -52,6 +52,7 @@ public class Raymond implements Runnable{
 
         this.globalConfigManager = new GlobalConfigManager();
         this.serverConfigsManager = new ServerConfigsManager(this);
+        this.serverConfigsManager.loadConfigs();
 
         logger.info("--------------- STARTING ---------------");
 

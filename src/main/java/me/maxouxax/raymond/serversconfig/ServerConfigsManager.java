@@ -21,10 +21,9 @@ public class ServerConfigsManager {
     public ServerConfigsManager(Raymond raymond) {
         this.raymond = raymond;
         this.databaseAccess = (DatabaseAccess) DatabaseManager.getDatabaseAccess(Databases.MONGODB.getName());
-        loadConfigs();
     }
 
-    private void loadConfigs(){
+    public void loadConfigs(){
         MongoClient mongoClient = this.databaseAccess.getMongoClient();
         MongoDatabase database = mongoClient.getDatabase("raymond");
         MongoCollection<ServerConfig> collection = database.getCollection("server_config", ServerConfig.class);
