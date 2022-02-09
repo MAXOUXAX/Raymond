@@ -1,8 +1,13 @@
 package me.maxouxax.raymond.serversconfig;
 
 import me.maxouxax.raymond.Raymond;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.PermissionOverride;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class ServerConfig {
 
@@ -12,6 +17,9 @@ public class ServerConfig {
 
     @BsonProperty(value = "archived")
     private boolean archived;
+
+    @BsonProperty(value = "permission_before_archive")
+    private HashMap<String, List<PermissionOverride>> permissionBeforeArchive;
 
     /**
      * Default constructor for MongoDB
@@ -23,6 +31,7 @@ public class ServerConfig {
     public ServerConfig(String serverId, boolean archived) {
         this.serverId = serverId;
         this.archived = archived;
+        this.permissionBeforeArchive = new HashMap<>();
     }
 
     public static ServerConfig getDefault(String serverId){
@@ -38,15 +47,6 @@ public class ServerConfig {
         if(save) save();
     }
 
-    public void setArchived(boolean archived, boolean save){
-        this.archived = archived;
-        if(save) save();
-    }
-
-    public boolean isArchived() {
-        return archived;
-    }
-
     /**
      * Do not use this method, use {@link ServerConfig#setServerId(String, boolean)} instead if you want to save the server config
      * @param serverId The server id
@@ -55,12 +55,34 @@ public class ServerConfig {
         setServerId(serverId, false);
     }
 
+    public void setArchived(boolean archived, boolean save){
+        this.archived = archived;
+        if(save) save();
+    }
+
     /**
      * Do not use this method, use {@link ServerConfig#setServerId(String, boolean)} instead if you want to save the server config
      * @param archived {@code true} if the server is archived, {@code false} otherwise
      */
     public void setArchived(boolean archived) {
         setArchived(archived, false);
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public HashMap<String, List<PermissionOverride>> getPermissionBeforeArchive() {
+        return permissionBeforeArchive;
+    }
+
+    public void setPermissionBeforeArchive(HashMap<String, List<PermissionOverride>> permissionBeforeArchive, boolean save){
+        this.permissionBeforeArchive = permissionBeforeArchive;
+        if(save) save();
+    }
+
+    public void setPermissionBeforeArchive(HashMap<String, List<PermissionOverride>> permissionBeforeArchive) {
+        setPermissionBeforeArchive(permissionBeforeArchive, false);
     }
 
     public void save(){
