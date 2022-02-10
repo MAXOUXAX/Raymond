@@ -30,21 +30,21 @@ public class CommandArchive {
             slashCommandInteractionEvent.getHook().sendMessage("Serveur archivé !").queue();
             List<GuildChannel> channelsList = guild.getChannels();
             Role atEveryone = guild.getRolesByName("@everyone", true).get(0);
+
+            HashMap<String, List<ChannelPermission>> permissionBeforeArchive = serverConfig.getPermissionBeforeArchive();
+            //making sure there are no permissions in the config, which should be the case if the unarchive process went well
+            if(!permissionBeforeArchive.isEmpty())permissionBeforeArchive.clear();
+
             channelsList.forEach(channel -> {
-                HashMap<String, List<ChannelPermission>> permissionBeforeArchive = serverConfig.getPermissionBeforeArchive();
-
-                //making sure there are no permissions in the config, which should be the case if the unarchive process went well
-                if(!permissionBeforeArchive.isEmpty())permissionBeforeArchive.clear();
-
                 permissionBeforeArchive.put(channel.getId(),
                         channel.getPermissionContainer().getPermissionOverrides().stream().map(ChannelPermission::new).collect(Collectors.toList())
                 );
-                serverConfig.setPermissionBeforeArchive(permissionBeforeArchive, true);
                 channel.getPermissionContainer().getPermissionOverrides().forEach(permissionOverride -> {
                     permissionOverride.delete().queue();
                 });
-                channel.getPermissionContainer().putPermissionOverride(atEveryone).deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_SEND).deny(Permission.ALL_VOICE_PERMISSIONS).queue();
+                channel.getPermissionContainer().putPermissionOverride(atEveryone).grant(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_SEND).deny(Permission.ALL_VOICE_PERMISSIONS).queue();
             });
+            serverConfig.setPermissionBeforeArchive(permissionBeforeArchive, true);
             serverConfig.setArchived(true, true);
         }
     }
@@ -73,5 +73,6 @@ public class CommandArchive {
             });
         });
         serverConfig.getPermissionBeforeArchive().clear();
+        serverConfig.save();
     }
 }
