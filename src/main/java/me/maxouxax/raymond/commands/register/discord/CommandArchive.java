@@ -25,9 +25,9 @@ public class CommandArchive {
         Guild guild = textChannel.getGuild();
         ServerConfig serverConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
         if (serverConfig.isArchived()) {
-            slashCommandInteractionEvent.getHook().sendMessage("This server is already archived.").queue();
+            slashCommandInteractionEvent.getHook().sendMessage("Ce serveur est déjà archivé, utilisez /unarchive pour le désarchiver").queue();
         } else {
-            slashCommandInteractionEvent.getHook().sendMessage("This server is now archived.").queue();
+            slashCommandInteractionEvent.getHook().sendMessage("Serveur archivé !").queue();
             List<GuildChannel> channelsList = guild.getChannels();
             Role atEveryone = guild.getRolesByName("@everyone", true).get(0);
             channelsList.forEach(channel -> {
@@ -53,10 +53,10 @@ public class CommandArchive {
     public void unarchive(User user, TextChannel textChannel, SlashCommandInteractionEvent slashCommandInteractionEvent, String[] args) {
         Guild guild = textChannel.getGuild();
         ServerConfig serverConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
-        if(!serverConfig.isArchived()){
-            slashCommandInteractionEvent.getHook().sendMessage("This server is not archived.").queue();
-        }else {
-            slashCommandInteractionEvent.getHook().sendMessage("This server is no longer archived.").queue();
+        if (!serverConfig.isArchived()) {
+            slashCommandInteractionEvent.getHook().sendMessage("Ce serveur n'est pas archivé, utilisez /archive pour l'archiver").queue();
+        } else {
+            slashCommandInteractionEvent.getHook().sendMessage("Serveur restauré !").queue();
             serverConfig.setArchived(false, true);
         }
         List<GuildChannel> channelsList = guild.getChannels();
@@ -74,5 +74,4 @@ public class CommandArchive {
         });
         serverConfig.getPermissionBeforeArchive().clear();
     }
-
 }
