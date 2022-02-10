@@ -2,6 +2,7 @@ package me.maxouxax.raymond.commands.register.discord;
 
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.commands.Command;
+import me.maxouxax.raymond.jda.pojos.ChannelPermission;
 import me.maxouxax.raymond.serversconfig.ServerConfig;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandArchive {
 
@@ -29,8 +31,14 @@ public class CommandArchive {
             List<GuildChannel> channelsList = guild.getChannels();
             Role atEveryone = guild.getRolesByName("@everyone", true).get(0);
             channelsList.forEach(channel -> {
-                HashMap<String, List<PermissionOverride>> permissionBeforeArchive = serverConfig.getPermissionBeforeArchive();
-                permissionBeforeArchive.put(channel.getId(), channel.getPermissionContainer().getPermissionOverrides());
+                HashMap<String, List<ChannelPermission>> permissionBeforeArchive = serverConfig.getPermissionBeforeArchive();
+
+                //making sure there are no permissions in the config, which should be the case if the unarchive process went well
+                if(!permissionBeforeArchive.isEmpty())permissionBeforeArchive.clear();
+
+                permissionBeforeArchive.put(channel.getId(),
+                        channel.getPermissionContainer().getPermissionOverrides().stream().map(ChannelPermission::new).collect(Collectors.toList())
+                );
                 serverConfig.setPermissionBeforeArchive(permissionBeforeArchive, true);
                 channel.getPermissionContainer().getPermissionOverrides().forEach(permissionOverride -> {
                     permissionOverride.delete().queue();
@@ -51,18 +59,20 @@ public class CommandArchive {
             slashCommandInteractionEvent.getHook().sendMessage("This server is no longer archived.").queue();
             serverConfig.setArchived(false, true);
         }
-        /*List<GuildChannel> channelsList = guild.getChannels();
+        List<GuildChannel> channelsList = guild.getChannels();
         channelsList.forEach(channel -> {
-            List<PermissionOverride> permissions = channelsHashMap.get(channel);
-            permissions.forEach(permissionOverride -> {
-                channel.getPermissionContainer().putPermissionOverride(permissionOverride.getPermissionHolder())
-                        .setAllow(permissionOverride.getAllowedRaw())
-                        .setDeny(permissionOverride.getDeniedRaw())
-                        .queue();
+            HashMap<String, List<ChannelPermission>> permissionBeforeArchive = serverConfig.getPermissionBeforeArchive();
+            permissionBeforeArchive.get(channel.getId()).forEach(channelPermission -> {
+                IPermissionHolder permissionHolder = channelPermission.isMemberPermission() ? channel.getGuild().getMemberById(channelPermission.getHolderId()) : channel.getGuild().getRoleById(channelPermission.getHolderId());
+                if(permissionHolder != null) {
+                    channel.getPermissionContainer().putPermissionOverride(permissionHolder)
+                            .setAllow(channelPermission.getAllowedRaw())
+                            .setDeny(channelPermission.getDeniedRaw())
+                            .queue();
+                }
             });
         });
-        channelsHashMap.clear();
-         */
+        serverConfig.getPermissionBeforeArchive().clear();
     }
 
 }
