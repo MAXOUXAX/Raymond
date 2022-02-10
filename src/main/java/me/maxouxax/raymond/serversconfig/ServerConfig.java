@@ -1,8 +1,7 @@
 package me.maxouxax.raymond.serversconfig;
 
 import me.maxouxax.raymond.Raymond;
-import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.entities.PermissionOverride;
+import me.maxouxax.raymond.jda.pojos.ChannelPermission;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
@@ -19,7 +18,7 @@ public class ServerConfig {
     private boolean archived;
 
     @BsonProperty(value = "permission_before_archive")
-    private HashMap<String, List<PermissionOverride>> permissionBeforeArchive;
+    private HashMap<String, List<ChannelPermission>> permissionBeforeArchive;
 
     /**
      * Default constructor for MongoDB
@@ -72,16 +71,16 @@ public class ServerConfig {
         return archived;
     }
 
-    public HashMap<String, List<PermissionOverride>> getPermissionBeforeArchive() {
+    public HashMap<String, List<ChannelPermission>> getPermissionBeforeArchive() {
         return permissionBeforeArchive;
     }
 
-    public void setPermissionBeforeArchive(HashMap<String, List<PermissionOverride>> permissionBeforeArchive, boolean save){
+    public void setPermissionBeforeArchive(HashMap<String, List<ChannelPermission>> permissionBeforeArchive, boolean save){
         this.permissionBeforeArchive = permissionBeforeArchive;
         if(save) save();
     }
 
-    public void setPermissionBeforeArchive(HashMap<String, List<PermissionOverride>> permissionBeforeArchive) {
+    public void setPermissionBeforeArchive(HashMap<String, List<ChannelPermission>> permissionBeforeArchive) {
         setPermissionBeforeArchive(permissionBeforeArchive, false);
     }
 
