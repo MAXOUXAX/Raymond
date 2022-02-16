@@ -27,7 +27,6 @@ public class CommandArchive {
         if (serverConfig.isArchived()) {
             slashCommandInteractionEvent.getHook().sendMessage("Ce serveur est déjà archivé, utilisez /unarchive pour le désarchiver").queue();
         } else {
-            slashCommandInteractionEvent.getHook().sendMessage("Serveur archivé !").queue();
             List<GuildChannel> channelsList = guild.getChannels();
             Role atEveryone = guild.getRolesByName("@everyone", true).get(0);
 
@@ -40,12 +39,15 @@ public class CommandArchive {
                         channel.getPermissionContainer().getPermissionOverrides().stream().map(ChannelPermission::new).collect(Collectors.toList())
                 );
                 channel.getPermissionContainer().getPermissionOverrides().forEach(permissionOverride -> {
-                    permissionOverride.delete().queue();
+                    permissionOverride.getManager().deny(
+                            Permission.MESSAGE_SEND, Permission.MESSAGE_SEND_IN_THREADS,
+                            Permission.VOICE_CONNECT, Permission.VOICE_STREAM, Permission.VOICE_START_ACTIVITIES)
+                            .queue();
                 });
-                channel.getPermissionContainer().putPermissionOverride(atEveryone).grant(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_SEND).deny(Permission.ALL_VOICE_PERMISSIONS).queue();
             });
             serverConfig.setPermissionBeforeArchive(permissionBeforeArchive, true);
             serverConfig.setArchived(true, true);
+            slashCommandInteractionEvent.getHook().sendMessage("Serveur archivé !").queue();
         }
     }
 
@@ -62,6 +64,8 @@ public class CommandArchive {
         List<GuildChannel> channelsList = guild.getChannels();
         channelsList.forEach(channel -> {
             HashMap<String, List<ChannelPermission>> permissionBeforeArchive = serverConfig.getPermissionBeforeArchive();
+            channel.getPermissionContainer().getPermissionOverrides().forEach(permissionOverride -> permissionOverride.delete().queue());
+
             permissionBeforeArchive.get(channel.getId()).forEach(channelPermission -> {
                 IPermissionHolder permissionHolder = channelPermission.isMemberPermission() ? channel.getGuild().getMemberById(channelPermission.getHolderId()) : channel.getGuild().getRoleById(channelPermission.getHolderId());
                 if(permissionHolder != null) {
