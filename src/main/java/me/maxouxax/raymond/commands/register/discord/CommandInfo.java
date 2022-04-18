@@ -45,11 +45,11 @@ public class CommandInfo implements DiscordCommand {
             game = "-/-";
         }
 
-        for ( Role r : memberTo.getRoles() ) {
+        for (Role r : memberTo.getRoles()) {
             roles += r.getName() + ", ";
         }
         if (roles.length() > 0)
-            roles = roles.substring(0, roles.length()-2);
+            roles = roles.substring(0, roles.length() - 2);
         else
             roles = "Aucun rôle.";
 

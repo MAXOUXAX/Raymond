@@ -16,7 +16,7 @@ public class CommandArchive implements DiscordCommand {
 
     private final Raymond raymond;
 
-    public CommandArchive(){
+    public CommandArchive() {
         this.raymond = Raymond.getInstance();
     }
 
@@ -76,7 +76,7 @@ public class CommandArchive implements DiscordCommand {
 
             HashMap<String, List<ChannelPermission>> permissionBeforeArchive = raymondServerConfig.getPermissionBeforeArchive();
             //making sure there are no permissions in the config, which should be the case if the unarchive process went well
-            if(!permissionBeforeArchive.isEmpty())permissionBeforeArchive.clear();
+            if (!permissionBeforeArchive.isEmpty()) permissionBeforeArchive.clear();
 
             channelsList.forEach(channel -> {
                 permissionBeforeArchive.put(channel.getId(),

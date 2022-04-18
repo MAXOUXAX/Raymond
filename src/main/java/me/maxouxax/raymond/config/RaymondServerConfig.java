@@ -70,6 +70,15 @@ public class RaymondServerConfig extends ServerConfig {
         return usersPower;
     }
 
+    /**
+     * Do not use this method, use {@link RaymondServerConfig#setUsersPower(Map, boolean)}  instead if you want to save the server config
+     *
+     * @param usersPower The UsersPower object representing users power
+     */
+    public void setUsersPower(Map<String, Long> usersPower) {
+        setUsersPower(usersPower, false);
+    }
+
     @Override
     public long getPowerFromUser(String userId) {
         return usersPower.getOrDefault(userId, 0L);
@@ -104,111 +113,103 @@ public class RaymondServerConfig extends ServerConfig {
         if (save) save();
     }
 
-    /**
-     * Do not use this method, use {@link RaymondServerConfig#setUsersPower(Map, boolean)}  instead if you want to save the server config
-     *
-     * @param usersPower The UsersPower object representing users power
-     */
-    public void setUsersPower(Map<String, Long> usersPower) {
-        setUsersPower(usersPower, false);
-    }
-
     public void save() {
         getServerConfigsManager().saveServerConfig(this);
     }
 
-    public void setArchived(boolean archived, boolean save){
+    public void setArchived(boolean archived, boolean save) {
         this.archived = archived;
-        if(save) save();
-    }
-
-    /**
-     * Do not use this method, use {@link RaymondServerConfig#setServerId(String, boolean)} instead if you want to save the server config
-     * @param archived {@code true} if the server is archived, {@code false} otherwise
-     */
-    public void setArchived(boolean archived) {
-        setArchived(archived, false);
+        if (save) save();
     }
 
     public HashMap<String, List<ChannelPermission>> getPermissionBeforeArchive() {
         return permissionBeforeArchive;
     }
 
-    public void setPermissionBeforeArchive(HashMap<String, List<ChannelPermission>> permissionBeforeArchive, boolean save){
-        this.permissionBeforeArchive = permissionBeforeArchive;
-        if(save) save();
-    }
-
     public void setPermissionBeforeArchive(HashMap<String, List<ChannelPermission>> permissionBeforeArchive) {
         setPermissionBeforeArchive(permissionBeforeArchive, false);
     }
 
-    public void setRulesBanner(String rulesBanner, boolean save){
+    public void setPermissionBeforeArchive(HashMap<String, List<ChannelPermission>> permissionBeforeArchive, boolean save) {
+        this.permissionBeforeArchive = permissionBeforeArchive;
+        if (save) save();
+    }
+
+    public void setRulesBanner(String rulesBanner, boolean save) {
         this.rulesBanner = rulesBanner;
-        if(save) save();
+        if (save) save();
     }
 
-    public void setRulesBanner(String rulesBanner) {
-        setRulesBanner(rulesBanner, false);
-    }
-
-    public void setRulesThumbnail(String rulesThumbnail, boolean save){
+    public void setRulesThumbnail(String rulesThumbnail, boolean save) {
         this.rulesThumbnail = rulesThumbnail;
-        if(save) save();
+        if (save) save();
     }
 
-    public void setRulesThumbnail(String rulesThumbnail) {
-        setRulesThumbnail(rulesThumbnail, false);
-    }
-
-    public void setRulesAttentionThumbnail(String rulesAttentionThumbnail) {
-        setRulesAttentionThumbnail(rulesAttentionThumbnail, false);
-    }
-
-    public void setRulesAttentionThumbnail(String rulesAttentionThumbnail, boolean save){
+    public void setRulesAttentionThumbnail(String rulesAttentionThumbnail, boolean save) {
         this.rulesAttentionThumbnail = rulesAttentionThumbnail;
-        if(save) save();
+        if (save) save();
     }
 
-    public void setRulesModerationThumbnail(String rulesModerationThumbnail) {
-        setRulesModerationThumbnail(rulesModerationThumbnail, false);
-    }
-
-    public void setRulesModerationThumbnail(String rulesModerationThumbnail, boolean save){
+    public void setRulesModerationThumbnail(String rulesModerationThumbnail, boolean save) {
         this.rulesModerationThumbnail = rulesModerationThumbnail;
-        if(save) save();
+        if (save) save();
     }
 
-    public void setRulesTextChannelId(String rulesTextChannelId) {
-        setRulesTextChannelId(rulesTextChannelId, false);
-    }
-
-    public void setRulesTextChannelId(String rulesTextChannelId, boolean save){
+    public void setRulesTextChannelId(String rulesTextChannelId, boolean save) {
         this.rulesTextChannelId = rulesTextChannelId;
-        if(save) save();
+        if (save) save();
     }
 
     public boolean isArchived() {
         return archived;
     }
 
+    /**
+     * Do not use this method, use {@link RaymondServerConfig#setServerId(String, boolean)} instead if you want to save the server config
+     *
+     * @param archived {@code true} if the server is archived, {@code false} otherwise
+     */
+    public void setArchived(boolean archived) {
+        setArchived(archived, false);
+    }
+
     public String getRulesBanner() {
         return rulesBanner;
+    }
+
+    public void setRulesBanner(String rulesBanner) {
+        setRulesBanner(rulesBanner, false);
     }
 
     public String getRulesThumbnail() {
         return rulesThumbnail;
     }
 
+    public void setRulesThumbnail(String rulesThumbnail) {
+        setRulesThumbnail(rulesThumbnail, false);
+    }
+
     public String getRulesModerationThumbnail() {
         return rulesModerationThumbnail;
+    }
+
+    public void setRulesModerationThumbnail(String rulesModerationThumbnail) {
+        setRulesModerationThumbnail(rulesModerationThumbnail, false);
     }
 
     public String getRulesAttentionThumbnail() {
         return rulesAttentionThumbnail;
     }
 
+    public void setRulesAttentionThumbnail(String rulesAttentionThumbnail) {
+        setRulesAttentionThumbnail(rulesAttentionThumbnail, false);
+    }
+
     public String getRulesTextChannelId() {
         return rulesTextChannelId;
+    }
+
+    public void setRulesTextChannelId(String rulesTextChannelId) {
+        setRulesTextChannelId(rulesTextChannelId, false);
     }
 }

@@ -33,7 +33,7 @@ public class CommandConsoleHelp implements ConsoleCommand {
 
     @Override
     public void onCommand(String[] args) {
-        for(ConsoleCommand command : supervisor.getCommandManager().getConsoleCommands()){
+        for (ConsoleCommand command : supervisor.getCommandManager().getConsoleCommands()) {
             supervisor.getLogger().info(command.name() + " - " + command.description() + " - " + command.help(), true);
         }
     }

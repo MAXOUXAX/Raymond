@@ -19,7 +19,8 @@ public class CommandEmbed implements DiscordCommand {
         String title = messageContextInteractionEvent.getOption("titre").getAsString();
         String description = messageContextInteractionEvent.getOption("description").getAsString();
         String image = "";
-        if(messageContextInteractionEvent.getOption("lien-de-limage") != null)image = messageContextInteractionEvent.getOption("lien-de-limage").getAsString();
+        if (messageContextInteractionEvent.getOption("lien-de-limage") != null)
+            image = messageContextInteractionEvent.getOption("lien-de-limage").getAsString();
         EmbedCrafter embedCrafter = new EmbedCrafter(Raymond.getInstance());
         embedCrafter.setTitle(title, "https://lyor.in/twitch")
                 .setColor(15844367)
