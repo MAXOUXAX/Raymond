@@ -3,6 +3,7 @@ package me.maxouxax.raymond.commands.register.console;
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.config.RaymondServerConfig;
 import me.maxouxax.supervisor.commands.ConsoleCommand;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 
 public class CommandConsolePower implements ConsoleCommand {
@@ -12,11 +13,11 @@ public class CommandConsolePower implements ConsoleCommand {
         Raymond raymond = Raymond.getInstance();
 
         if (args.length == 3) {
-            RaymondServerConfig serverConfig = raymond.getServerConfigsManager().getServerConfig(args[0]);
-            if (serverConfig == null) {
+            Guild guild = raymond.getJda().getGuildById(args[0]);
+            if (guild == null) {
                 System.out.println("Le serveur n'existe pas");
             } else {
-                Member member = raymond.getJda().getGuildById(args[0]).getMemberById(args[1]);
+                Member member = guild.getMemberById(args[1]);
                 if (member == null) {
                     System.out.println("L'utilisateur n'existe pas ou n'est pas présent sur le serveur");
                 } else {
@@ -24,6 +25,7 @@ public class CommandConsolePower implements ConsoleCommand {
                     if (power < 0) {
                         System.out.println("Le power doit être supérieur à 0");
                     } else {
+                        RaymondServerConfig serverConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
                         serverConfig.setUserPower(member.getUser(), power, true);
                         System.out.println("Le power de " + member.getUser().getName() + " a bien été défini à " + power);
                     }
