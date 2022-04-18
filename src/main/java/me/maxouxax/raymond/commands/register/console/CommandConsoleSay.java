@@ -1,22 +1,32 @@
 package me.maxouxax.raymond.commands.register.console;
 
-import me.maxouxax.raymond.Raymond;
-import me.maxouxax.raymond.commands.CommandMap;
-import me.maxouxax.raymond.commands.ConsoleCommand;
+import me.maxouxax.supervisor.Supervisor;
+import me.maxouxax.supervisor.commands.ConsoleCommand;
 
-public class CommandConsoleSay {
+public class CommandConsoleSay implements ConsoleCommand {
 
-    private final Raymond raymond;
-    private final CommandMap commandMap;
-
-    public CommandConsoleSay(CommandMap commandMap) {
-        this.commandMap = commandMap;
-        this.raymond = Raymond.getInstance();
+    @Override
+    public String name() {
+        return "say";
     }
 
-    @ConsoleCommand(name = "say", help = "say", description = "Permet de faire dire n'importe quoi au BOT")
-    public void say(String[] args) {
-        raymond.getLogger().info("Hey, it's working!");
+    @Override
+    public String description() {
+        return "Permet de faire dire n'importe quoi au BOT";
     }
 
+    @Override
+    public String help() {
+        return "say";
+    }
+
+    @Override
+    public String example() {
+        return "say";
+    }
+
+    @Override
+    public void onCommand(String[] args) {
+        Supervisor.getInstance().getLogger().info("Hey, it's working!");
+    }
 }

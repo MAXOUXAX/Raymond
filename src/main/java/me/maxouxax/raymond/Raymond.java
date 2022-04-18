@@ -1,159 +1,119 @@
 package me.maxouxax.raymond;
 
-import me.maxouxax.raymond.commands.CommandMap;
-import me.maxouxax.raymond.database.DatabaseManager;
+import me.maxouxax.raymond.commands.register.console.CommandConsoleHelp;
+import me.maxouxax.raymond.commands.register.console.CommandConsolePower;
+import me.maxouxax.raymond.commands.register.console.CommandConsoleSay;
+import me.maxouxax.raymond.commands.register.discord.*;
+import me.maxouxax.raymond.config.RaymondConfig;
+import me.maxouxax.raymond.config.RaymondServerConfigsManager;
 import me.maxouxax.raymond.listeners.DiscordListener;
-import me.maxouxax.raymond.serversconfig.ServerConfigsManager;
-import me.maxouxax.raymond.utils.ErrorHandler;
-import me.maxouxax.raymond.utils.GlobalConfigManager;
-import net.dv8tion.jda.api.JDA;
+import me.maxouxax.supervisor.commands.DiscordCommand;
+import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.slf4j.Logger;
 
 import javax.security.auth.login.LoginException;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.Scanner;
-import java.util.concurrent.Executors;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class Raymond implements Runnable{
+public class Raymond extends Supervised {
 
     private static Raymond instance;
-    private static JDA jda;
-    private final CommandMap commandMap;
-    private final Scanner scanner = new Scanner(System.in);
-    private final Logger logger;
-    private final ErrorHandler errorHandler;
-    private final GlobalConfigManager globalConfigManager;
-    private final ServerConfigsManager serverConfigsManager;
 
     private ScheduledExecutorService scheduledExecutorService;
 
-    private boolean running;
     private final String version;
 
-    public Raymond() throws LoginException, IllegalArgumentException, NullPointerException, IOException, InterruptedException, SQLException {
+    public Raymond() {
         instance = this;
-        this.logger = org.slf4j.LoggerFactory.getLogger(Raymond.class);
-        this.errorHandler = new ErrorHandler();
-
-        DatabaseManager.initDatabaseConnection(Paths.get("configs/database.yml"));
-        DatabaseManager.initDatabaseConnection(Paths.get("configs/database_mongo.yml"));
-
-        String string = new File(Raymond.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
-        string = string.replaceAll("Raymond-", "")
-                .replaceAll(".jar", "");
-        this.version = string;
-
-        this.globalConfigManager = new GlobalConfigManager();
-        this.serverConfigsManager = new ServerConfigsManager(this);
-        this.serverConfigsManager.loadConfigs();
-
-        logger.info("--------------- STARTING ---------------");
-
-        logger.info("> Generated new BOT instance");
-        logger.info("> BOT thread started, loading libraries...");
-        this.commandMap = new CommandMap();
-        logger.info("> Libraries loaded! Loading JDA...");
-
-        loadDiscord();
-        commandMap.updateCommands();
-        logger.info("> JDA loaded!");
-
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(16);
-
-        logger.info("> The BOT is now good to go !");
-        logger.info("--------------- STARTING ---------------");
-    }
-
-    private void loadDiscord() throws LoginException, InterruptedException {
-        jda = JDABuilder.create(globalConfigManager.getStringValue("botToken"), GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.DIRECT_MESSAGE_REACTIONS,
-                GatewayIntent.DIRECT_MESSAGE_TYPING,
-                GatewayIntent.DIRECT_MESSAGES,
-                GatewayIntent.GUILD_BANS,
-                GatewayIntent.GUILD_EMOJIS,
-                GatewayIntent.GUILD_MEMBERS,
-                GatewayIntent.GUILD_INVITES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                GatewayIntent.GUILD_MESSAGE_TYPING,
-                GatewayIntent.GUILD_PRESENCES,
-                GatewayIntent.GUILD_VOICE_STATES)
-                .build();
-        jda.addEventListener(new DiscordListener(commandMap));
-        jda.getPresence().setActivity(Activity.playing(globalConfigManager.getStringValue("gameName")));
-        jda.awaitReady();
-    }
-
-    public ErrorHandler getErrorHandler() {
-        return errorHandler;
-    }
-
-    public JDA getJda() {
-        return jda;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
-    @Override
-    public void run() {
-        running = true;
-
-        while (running) {
-            if (scanner.hasNextLine()) {
-                String nextLine = scanner.nextLine();
-                commandMap.consoleCommand(nextLine);
-            }
-        }
-
-        jda.getPresence().setActivity(Activity.playing("Arrêt en cours..."));
-        logger.info("--------------- STOPPING ---------------");
-        logger.info("> Shutdowning...");
-        scanner.close();
-        logger.info("> Scanner closed!");
-        jda.shutdown();
-        logger.info("> JDA shutdowned!");
-        DatabaseManager.closeDatabasesConnection();
-        logger.info("> Closed database connection!");
-        logger.info("--------------- STOPPING ---------------");
-        logger.info("Arrêt du BOT réussi");
-        System.exit(0);
-    }
-
-    public static void main(String[] args) {
-        try {
-            Raymond raymond = new Raymond();
-            new Thread(raymond, "raymond").start();
-        } catch (LoginException | IllegalArgumentException | NullPointerException | IOException | InterruptedException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Logger getLogger() {
-        return logger;
+        this.version = this.getDescription().getVersion();
+        this.serverConfigsManager = new RaymondServerConfigsManager();
     }
 
     public String getVersion() {
         return version;
     }
 
-    public GlobalConfigManager getGlobalConfigManager() {
-        return globalConfigManager;
+    @Override
+    public void onLoad() {
+        super.onLoad();
     }
 
-    public ServerConfigsManager getServerConfigsManager() {
-        return serverConfigsManager;
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        saveDefaultConfig();
+
+        loadConfig(RaymondConfig.class);
+
+        try {
+            jda = JDABuilder.create(getConfig().getDiscordToken(), GatewayIntent.GUILD_MESSAGES,
+                            GatewayIntent.DIRECT_MESSAGE_REACTIONS,
+                            GatewayIntent.DIRECT_MESSAGE_TYPING,
+                            GatewayIntent.DIRECT_MESSAGES,
+                            GatewayIntent.GUILD_BANS,
+                            GatewayIntent.GUILD_EMOJIS,
+                            GatewayIntent.GUILD_MEMBERS,
+                            GatewayIntent.GUILD_INVITES,
+                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                            GatewayIntent.GUILD_MESSAGE_TYPING,
+                            GatewayIntent.GUILD_PRESENCES,
+                            GatewayIntent.GUILD_VOICE_STATES)
+                    .build();
+            jda.addEventListener(new DiscordListener());
+            jda.getPresence().setActivity(Activity.playing(getConfig().getGameName()));
+            jda.awaitReady();
+            super.bindListeners();
+        } catch (LoginException | IllegalArgumentException | NullPointerException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        supervisor.getCommandManager().registerConsoleCommand(new CommandConsoleHelp());
+        supervisor.getCommandManager().registerConsoleCommand(new CommandConsoleSay());
+        supervisor.getCommandManager().registerConsoleCommand(new CommandConsolePower());
+
+        List<DiscordCommand> discordCommands = Arrays.asList(
+                new CommandArchive(),
+                new CommandDelete(),
+                new CommandEmbed(),
+                new CommandGame(),
+                new CommandInfo(),
+                new CommandPing(this),
+                new CommandPower(),
+                new CommandSendRules(this),
+                new CommandUnarchive(),
+                new CommandVersion(this)
+        );
+        discordCommands.forEach(discordCommand -> supervisor.getCommandManager().registerCommand(this, discordCommand));
+
+        supervisor.getCommandManager().updateCommands(this);
     }
 
-    public static Raymond getInstance(){
+    @Override
+    public void onReload() {
+
+    }
+
+    @Override
+    public void onDisable() {
+        jda.getPresence().setActivity(Activity.playing("Arrêt en cours..."));
+        supervisor.getLogger().info("--------------- STOPPING ---------------");
+        supervisor.getLogger().info("> Shutdowning...");
+        jda.shutdown();
+        supervisor.getLogger().info("> JDA shutdowned!");
+        supervisor.getLogger().info("--------------- STOPPING ---------------");
+        supervisor.getLogger().info("Arrêt du BOT réussi");
+    }
+
+    public static Raymond getInstance() {
         return instance;
+    }
+
+    @Override
+    public RaymondServerConfigsManager getServerConfigsManager() {
+        return (RaymondServerConfigsManager) this.serverConfigsManager;
     }
 
 }

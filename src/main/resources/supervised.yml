@@ -1,0 +1,9 @@
+name: Raymond
+main: me.maxouxax.raymond.Raymond
+version: ${project.version}
+description: Raymond, un bot Discord gérant les différents serveurs de la promotion BUT
+authors:
+  - Maxouxax
+contributors:
+  - Maxouxax
+website: https://maxouxax.me

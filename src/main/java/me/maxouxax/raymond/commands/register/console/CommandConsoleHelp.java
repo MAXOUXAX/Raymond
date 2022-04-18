@@ -1,22 +1,40 @@
 package me.maxouxax.raymond.commands.register.console;
 
-import me.maxouxax.raymond.Raymond;
-import me.maxouxax.raymond.commands.CommandMap;
-import me.maxouxax.raymond.commands.ConsoleCommand;
-import me.maxouxax.raymond.commands.SimpleConsoleCommand;
+import me.maxouxax.supervisor.Supervisor;
+import me.maxouxax.supervisor.commands.ConsoleCommand;
 
-public class CommandConsoleHelp {
+public class CommandConsoleHelp implements ConsoleCommand {
 
-    private final CommandMap commandMap;
+    private final Supervisor supervisor;
 
-    public CommandConsoleHelp(CommandMap commandMap) {
-        this.commandMap = commandMap;
+    public CommandConsoleHelp() {
+        this.supervisor = Supervisor.getInstance();
     }
 
-    @ConsoleCommand(name="help", description="Affiche l'entièreté des commandes disponibles", help = "help")
-    public void help(){
-        for(SimpleConsoleCommand command : commandMap.getConsoleCommands()){
-            Raymond.getInstance().getLogger().info(command.getName() + " - " + command.getDescription() + " - " + command.getHelp(), true);
+    @Override
+    public String name() {
+        return "help";
+    }
+
+    @Override
+    public String description() {
+        return "Affiche l'entièreté des commandes disponibles";
+    }
+
+    @Override
+    public String help() {
+        return "help";
+    }
+
+    @Override
+    public String example() {
+        return "help";
+    }
+
+    @Override
+    public void onCommand(String[] args) {
+        for(ConsoleCommand command : supervisor.getCommandManager().getConsoleCommands()){
+            supervisor.getLogger().info(command.name() + " - " + command.description() + " - " + command.help(), true);
         }
     }
 
