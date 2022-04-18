@@ -6,6 +6,7 @@ import me.maxouxax.supervisor.serversconfig.ServerConfig;
 import me.maxouxax.supervisor.serversconfig.ServerConfigsManager;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.HashMap;
@@ -51,7 +52,6 @@ public class RaymondServerConfig extends ServerConfig {
     }
 
     public RaymondServerConfig(String serverId, boolean archived) {
-        super(serverId);
         this.serverId = serverId;
         this.archived = archived;
         this.permissionBeforeArchive = new HashMap<>();
@@ -62,7 +62,8 @@ public class RaymondServerConfig extends ServerConfig {
         this.rulesTextChannelId = "";
     }
 
-    public ServerConfig getDefault(String serverId, ServerConfigsManager serverConfigsManager) {
+    @Override
+    public ServerConfig getDefault(String serverId) {
         return new RaymondServerConfig(serverId, false);
     }
 
@@ -84,12 +85,17 @@ public class RaymondServerConfig extends ServerConfig {
         return usersPower.getOrDefault(userId, 0L);
     }
 
+    @BsonIgnore
     public ServerConfigsManager getServerConfigsManager() {
         return Raymond.getInstance().getServerConfigsManager();
     }
 
+    @Override
+    public String getServerId() {
+        return serverId;
+    }
+
     public void setServerId(String serverId, boolean save) {
-        super.setServerId(serverId);
         this.serverId = serverId;
         if (save) save();
     }
