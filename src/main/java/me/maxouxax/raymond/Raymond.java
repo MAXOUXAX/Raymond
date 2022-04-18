@@ -21,15 +21,17 @@ import java.util.concurrent.ScheduledExecutorService;
 public class Raymond extends Supervised {
 
     private static Raymond instance;
-
-    private ScheduledExecutorService scheduledExecutorService;
-
     private final String version;
+    private ScheduledExecutorService scheduledExecutorService;
 
     public Raymond() {
         instance = this;
         this.version = this.getDescription().getVersion();
         this.serverConfigsManager = new RaymondServerConfigsManager();
+    }
+
+    public static Raymond getInstance() {
+        return instance;
     }
 
     public String getVersion() {
@@ -105,10 +107,6 @@ public class Raymond extends Supervised {
         supervisor.getLogger().info("> JDA shutdowned!");
         supervisor.getLogger().info("--------------- STOPPING ---------------");
         supervisor.getLogger().info("Arrêt du BOT réussi");
-    }
-
-    public static Raymond getInstance() {
-        return instance;
     }
 
     @Override

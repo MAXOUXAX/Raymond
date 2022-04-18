@@ -16,15 +16,15 @@ public class DiscordListener implements EventListener {
 
     private final Raymond raymond;
 
-    public DiscordListener(){
+    public DiscordListener() {
         this.raymond = Raymond.getInstance();
     }
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        if(event instanceof MessageReceivedEvent) onMessage((MessageReceivedEvent)event);
-        if(event instanceof MessageReactionAddEvent) onReactionAdd((MessageReactionAddEvent)event);
-        if(event instanceof MessageReactionRemoveEvent) onReactionRemove((MessageReactionRemoveEvent)event);
+        if (event instanceof MessageReceivedEvent) onMessage((MessageReceivedEvent) event);
+        if (event instanceof MessageReactionAddEvent) onReactionAdd((MessageReactionAddEvent) event);
+        if (event instanceof MessageReactionRemoveEvent) onReactionRemove((MessageReactionRemoveEvent) event);
     }
 
     private void onReactionAdd(MessageReactionAddEvent event) {
@@ -39,8 +39,8 @@ public class DiscordListener implements EventListener {
         }
     }
 
-    private void onDM(MessageReceivedEvent event){
-        if(event.getAuthor().equals(event.getJDA().getSelfUser())) return;
+    private void onDM(MessageReceivedEvent event) {
+        if (event.getAuthor().equals(event.getJDA().getSelfUser())) return;
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond);
         embedCrafter.setColor(Color.RED.getRGB());
         embedCrafter.setTitle("Private message received of " + event.getAuthor().getName());
