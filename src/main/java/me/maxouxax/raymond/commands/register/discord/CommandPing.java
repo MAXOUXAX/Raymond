@@ -33,7 +33,7 @@ public class CommandPing implements DiscordCommand {
         long ping = textChannel.getGuild().getJDA().getGatewayPing();
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond)
                 .setTitle("DiscordAPI ping", raymond.getConfig().getWebsiteUrl())
-                .setThumbnailUrl(member.getAvatarUrl() + "?size=256")
+                .setThumbnailUrl(member.getUser().getAvatarUrl() + "?size=256")
                 .addField(new MessageEmbed.Field("Ping", ping + "ms", true));
         if (ping > 300) {
             embedCrafter.setColor(Color.RED);
