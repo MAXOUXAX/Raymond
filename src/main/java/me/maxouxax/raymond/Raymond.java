@@ -101,12 +101,7 @@ public class Raymond extends Supervised {
     @Override
     public void onDisable() {
         jda.getPresence().setActivity(Activity.playing("Arrêt en cours..."));
-        supervisor.getLogger().info("--------------- STOPPING ---------------");
-        supervisor.getLogger().info("> Shutdowning...");
         jda.shutdown();
-        supervisor.getLogger().info("> JDA shutdowned!");
-        supervisor.getLogger().info("--------------- STOPPING ---------------");
-        supervisor.getLogger().info("Arrêt du BOT réussi");
     }
 
     @Override
