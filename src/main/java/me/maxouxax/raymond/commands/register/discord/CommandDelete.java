@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
+import java.util.concurrent.CompletableFuture;
+
 public class CommandDelete implements DiscordCommand {
 
     @Override
@@ -32,7 +34,7 @@ public class CommandDelete implements DiscordCommand {
             messageContextInteractionEvent.getHook().editOriginal("Suppression en cours... (Récupération de l'historique)").queue();
             history.retrievePast(Math.toIntExact(messagesToDelete)).queue(messages -> {
                 messageContextInteractionEvent.getHook().editOriginal("Suppression en cours... (Supression de " + messagesToDelete + " messages)").queue();
-                textChannel.deleteMessages(messages).queue(unused -> {
+                CompletableFuture.allOf(textChannel.purgeMessages(messages).toArray(CompletableFuture[]::new)).thenAccept(unused -> {
                     messageContextInteractionEvent.getHook().editOriginal("Suppression de " + messagesToDelete + " messages terminée !").queue();
                 });
             });
