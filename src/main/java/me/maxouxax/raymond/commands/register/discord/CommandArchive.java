@@ -20,35 +20,6 @@ public class CommandArchive implements DiscordCommand {
         this.raymond = Raymond.getInstance();
     }
 
-    /*@Command(name="unarchive", power = 150, help = "unarchive", example = "unarchive")
-    public void unarchive(User user, TextChannel textChannel, SlashCommandInteractionEvent slashCommandInteractionEvent, String[] args) {
-        Guild guild = textChannel.getGuild();
-        ServerConfig serverConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
-        if (!serverConfig.isArchived()) {
-            slashCommandInteractionEvent.getHook().sendMessage("Ce serveur n'est pas archivé, utilisez /archive pour l'archiver").queue();
-        } else {
-            slashCommandInteractionEvent.getHook().sendMessage("Serveur restauré !").queue();
-            serverConfig.setArchived(false, true);
-        }
-        List<GuildChannel> channelsList = guild.getChannels();
-        channelsList.forEach(channel -> {
-            HashMap<String, List<ChannelPermission>> permissionBeforeArchive = serverConfig.getPermissionBeforeArchive();
-            channel.getPermissionContainer().getPermissionOverrides().forEach(permissionOverride -> permissionOverride.delete().queue());
-
-            permissionBeforeArchive.get(channel.getId()).forEach(channelPermission -> {
-                IPermissionHolder permissionHolder = channelPermission.isMemberPermission() ? channel.getGuild().getMemberById(channelPermission.getHolderId()) : channel.getGuild().getRoleById(channelPermission.getHolderId());
-                if(permissionHolder != null) {
-                    channel.getPermissionContainer().putPermissionOverride(permissionHolder)
-                            .setAllow(channelPermission.getAllowedRaw())
-                            .setDeny(channelPermission.getDeniedRaw())
-                            .queue();
-                }
-            });
-        });
-        serverConfig.getPermissionBeforeArchive().clear();
-        serverConfig.save();
-    }*/
-
     @Override
     public String name() {
         return "archive";
