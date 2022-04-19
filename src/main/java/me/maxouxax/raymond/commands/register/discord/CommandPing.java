@@ -3,6 +3,7 @@ package me.maxouxax.raymond.commands.register.discord;
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
+import me.maxouxax.supervisor.utils.UserUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -33,7 +34,7 @@ public class CommandPing implements DiscordCommand {
         long ping = textChannel.getGuild().getJDA().getGatewayPing();
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond)
                 .setTitle("DiscordAPI ping", raymond.getConfig().getWebsiteUrl())
-                .setThumbnailUrl(member.getUser().getAvatarUrl() + "?size=256")
+                .setThumbnailUrl(UserUtils.getAvatarUrl(member) + "?size=256")
                 .addField(new MessageEmbed.Field("Ping", ping + "ms", true));
         if (ping > 300) {
             embedCrafter.setColor(Color.RED);
