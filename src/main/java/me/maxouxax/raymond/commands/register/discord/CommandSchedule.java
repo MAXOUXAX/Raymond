@@ -4,16 +4,14 @@ import me.maxouxax.raymond.schedule.UnivClass;
 import me.maxouxax.raymond.schedule.UnivHelper;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.commands.slashannotations.Option;
-import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 public class CommandSchedule implements DiscordCommand {
 
@@ -39,7 +37,16 @@ public class CommandSchedule implements DiscordCommand {
                 if (univSchedule.size() == 0) {
                     slashCommandInteractionEvent.reply("Aucun cours n'est prévu à cette date").queue();
                 } else {
-                    slashCommandInteractionEvent.replyEmbeds(univSchedule.stream().map(UnivClass::toEmbed).map(EmbedCrafter::build).toList()).queue();
+                    slashCommandInteractionEvent.reply("Récupération des cours...").queue();
+
+                    List<MessageAction> messageActions = univSchedule.stream().map(univClass -> slashCommandInteractionEvent.getTextChannel()
+                            .sendMessageEmbeds(univClass.toEmbed().build())
+                            .setActionRows(univClass.toActionRow()))
+                            .toList();
+
+                    RestAction.allOf(messageActions).queue(messages -> {
+                        slashCommandInteractionEvent.getHook().deleteOriginal().queue();
+                    });
                 }
 
             }
