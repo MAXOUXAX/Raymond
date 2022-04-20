@@ -29,7 +29,8 @@ public class CommandDelete implements DiscordCommand {
         if (messagesToDelete > 100 || messagesToDelete < 2) {
             messageContextInteractionEvent.reply("Dû à une limitation de Discord, le nombre de messages à supprimer doit être compris entre 2 et 100").setEphemeral(true).queue();
         } else {
-            messageContextInteractionEvent.reply("Suppression en cours...").queue();
+            // We are sending the reply synchronously, so that MessageHistory contains the reply and retrievePast works as expected
+            messageContextInteractionEvent.reply("Suppression en cours...").complete();
             MessageHistory history = new MessageHistory(textChannel);
             messageContextInteractionEvent.getHook().editOriginal("Suppression en cours... (Récupération de l'historique)").queue();
             history.retrievePast(Math.toIntExact(messagesToDelete)).queue(messages -> {
