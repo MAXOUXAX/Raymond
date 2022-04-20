@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.json.JSONObject;
 
 import java.awt.*;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,12 +48,13 @@ public class UnivClass {
         DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
         DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM").withLocale(Locale.FRANCE);
         embed.setAuthor(startDateTime.format(dayFormatter) + " — " + startDateTime.format(hourFormatter) + "-" + endDateTime.format(hourFormatter), "https://google.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Icons8_flat_clock.svg/1200px-Icons8_flat_clock.svg.png");
+        embed.setTimestamp(OffsetDateTime.from(startDateTime));
 
         embed.setDescription("\u200E");
 
-        embed.addField("Groupe(s)", groups.stream().map(Group::getLabel).reduce((a, b) -> a + ", " + b).orElse("Aucun"), true);
-        embed.addField("Salle(s)", rooms.stream().map(Room::getLabel).reduce((a, b) -> a + ", " + b).orElse("Aucune"), true);
-        embed.addField("Enseignant(s)", teachers.stream().map(Teacher::getName).reduce((a, b) -> a + ", " + b).orElse("Aucun"), false);
+        embed.addField("Groupe(s)", groups.stream().map(group -> "`" + group.getLabel() + "`").reduce((a, b) -> a + "\n" + b).orElse("Aucun"), true);
+        embed.addField("Salle(s)", rooms.stream().map(room -> "`" + room.getLabel() + "`").reduce((a, b) -> a + "\n" + b).orElse("Aucune"), true);
+        embed.addField("Enseignant(s)", teachers.stream().map(Teacher::getName).reduce((a, b) -> a + "\n" + b).orElse("Aucun"), false);
 
         return embed;
     }
