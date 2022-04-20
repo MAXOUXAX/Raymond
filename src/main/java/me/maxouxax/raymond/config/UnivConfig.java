@@ -6,6 +6,7 @@ public class UnivConfig {
     private String dataUrl;
     private String username;
     private String password;
+    private String clockEmoji;
 
     public UnivConfig() {
     }
@@ -41,4 +42,13 @@ public class UnivConfig {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getClockEmoji() {
+        return clockEmoji;
+    }
+
+    public void setClockEmoji(String clockEmoji) {
+        this.clockEmoji = clockEmoji;
+    }
+
 }

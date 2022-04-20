@@ -1,7 +1,9 @@
 package me.maxouxax.raymond.schedule;
 
 import me.maxouxax.raymond.Raymond;
+import me.maxouxax.raymond.config.UnivConfig;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.json.JSONObject;
@@ -16,6 +18,7 @@ import java.util.*;
 
 public class UnivClass {
 
+    private UnivConfig univConfig;
     private String id;
     private ZonedDateTime startDateTime;
     private ZonedDateTime endDateTime;
@@ -28,6 +31,7 @@ public class UnivClass {
     private List<Group> groups;
 
     public UnivClass(JSONObject event) {
+        this.univConfig = Raymond.getInstance().getUnivConnector().getUnivConfig();
         this.id = event.getString("id");
         this.startDateTime = ZonedDateTime.parse(event.getString("startDateTime")).withZoneSameInstant(ZoneId.of("Europe/Paris"));
         this.endDateTime = ZonedDateTime.parse(event.getString("endDateTime")).withZoneSameInstant(ZoneId.of("Europe/Paris"));
@@ -47,7 +51,7 @@ public class UnivClass {
 
         DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
         DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM").withLocale(Locale.FRANCE);
-        embed.setAuthor(startDateTime.format(dayFormatter) + " — " + startDateTime.format(hourFormatter) + "-" + endDateTime.format(hourFormatter), "https://google.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Icons8_flat_clock.svg/1200px-Icons8_flat_clock.svg.png");
+        embed.setAuthor(startDateTime.format(dayFormatter) + " — " + startDateTime.format(hourFormatter) + "-" + endDateTime.format(hourFormatter), univConfig.getDataUrl() + "/edt", univConfig.getClockEmoji());
         embed.setTimestamp(OffsetDateTime.from(startDateTime));
 
         embed.setDescription("\u200E");
@@ -66,7 +70,7 @@ public class UnivClass {
             rows.add(ActionRow.of(button));
         }
         if (teachers.size() > 0) {
-            rows.add(ActionRow.of(teachers.stream().map(teacher -> Button.link("https://api.maxouxax.me/redirect?l=mailto:" + teacher.getEmail(), "\uD83D\uDCE7 Contacter " + teacher.getName())).toList()));
+            rows.add(ActionRow.of(teachers.stream().map(teacher -> Button.link("https://api.maxouxax.me/redirect?l=mailto:" + teacher.getEmail(), "Contacter " + teacher.getName()).withEmoji(Emoji.fromUnicode("\uD83D\uDCE7"))).toList()));
         }
         return rows;
     }

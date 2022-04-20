@@ -10,3 +10,4 @@ univConfig:
   dataUrl: ""
   username: ""
   password: ""
+  clockEmoji: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Icons8_flat_clock.svg/1200px-Icons8_flat_clock.svg.png"
