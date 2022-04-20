@@ -105,6 +105,11 @@ public class Raymond extends Supervised {
     }
 
     @Override
+    public RaymondConfig getConfig() {
+        return (RaymondConfig) super.getConfig();
+    }
+
+    @Override
     public RaymondServerConfigsManager getServerConfigsManager() {
         return (RaymondServerConfigsManager) this.serverConfigsManager;
     }
