@@ -7,6 +7,7 @@ import me.maxouxax.raymond.commands.register.discord.*;
 import me.maxouxax.raymond.config.RaymondConfig;
 import me.maxouxax.raymond.config.RaymondServerConfigsManager;
 import me.maxouxax.raymond.listeners.DiscordListener;
+import me.maxouxax.raymond.schedule.UnivConnector;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.JDABuilder;
@@ -14,6 +15,8 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,14 +24,9 @@ import java.util.concurrent.ScheduledExecutorService;
 public class Raymond extends Supervised {
 
     private static Raymond instance;
-    private final String version;
+    private String version;
+    private UnivConnector univConnector;
     private ScheduledExecutorService scheduledExecutorService;
-
-    public Raymond() {
-        instance = this;
-        this.version = this.getDescription().getVersion();
-        this.serverConfigsManager = new RaymondServerConfigsManager();
-    }
 
     public static Raymond getInstance() {
         return instance;
@@ -45,10 +43,21 @@ public class Raymond extends Supervised {
 
     @Override
     public void onEnable() {
+        instance = this;
+        this.serverConfigsManager = new RaymondServerConfigsManager();
         super.onEnable();
-        saveDefaultConfig();
 
+        saveDefaultConfig();
         loadConfig(RaymondConfig.class);
+
+        this.version = this.getDescription().getVersion();
+        this.univConnector = new UnivConnector();
+
+        try {
+            this.univConnector.connect();
+        } catch (IOException | URISyntaxException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
         try {
             jda = JDABuilder.create(getConfig().getDiscordToken(), GatewayIntent.GUILD_MESSAGES,
@@ -84,6 +93,7 @@ public class Raymond extends Supervised {
                 new CommandInfo(),
                 new CommandPing(this),
                 new CommandPower(),
+                new CommandSchedule(),
                 new CommandSendRules(this),
                 new CommandUnarchive(),
                 new CommandVersion(this)
@@ -112,6 +122,10 @@ public class Raymond extends Supervised {
     @Override
     public RaymondServerConfigsManager getServerConfigsManager() {
         return (RaymondServerConfigsManager) this.serverConfigsManager;
+    }
+
+    public UnivConnector getUnivConnector() {
+        return univConnector;
     }
 
 }
