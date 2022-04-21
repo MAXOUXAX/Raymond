@@ -46,14 +46,6 @@
         <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <name>jcenter-bintray</name>
-            <url>https://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>me.maxouxax</groupId>
