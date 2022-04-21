@@ -51,7 +51,7 @@ public class UnivClass {
 
         DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
         DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM").withLocale(Locale.FRANCE);
-        embed.setAuthor(startDateTime.format(dayFormatter) + " — " + startDateTime.format(hourFormatter) + "-" + endDateTime.format(hourFormatter), univConfig.getDataUrl() + "/edt", univConfig.getClockEmoji());
+        embed.setAuthor(startDateTime.format(dayFormatter) + " — " + startDateTime.format(hourFormatter) + "-" + endDateTime.format(hourFormatter), univConfig.getDataUrl() + "/loginin?app=edt", univConfig.getClockEmoji());
         embed.setTimestamp(OffsetDateTime.from(startDateTime));
 
         embed.setDescription("\u200E");
