@@ -1,6 +1,8 @@
 package me.maxouxax.raymond.schedule;
 
 import me.maxouxax.raymond.Raymond;
+import me.maxouxax.supervisor.Supervisor;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -30,8 +32,8 @@ public class UnivHelper {
                 UnivClass univClass = new UnivClass((JSONObject) event);
                 univClasses.add(univClass);
             });
-        } catch (IOException | URISyntaxException | InterruptedException ignored) {
-
+        } catch (IOException | URISyntaxException | InterruptedException | JSONException e) {
+            Supervisor.getInstance().getErrorHandler().handleException(e);
         }
 
         return univClasses;
