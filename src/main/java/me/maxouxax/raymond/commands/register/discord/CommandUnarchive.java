@@ -58,7 +58,7 @@ public class CommandUnarchive implements DiscordCommand {
             });
             serverConfig.getPermissionBeforeArchive().clear();
             serverConfig.save();
-            serverConfig.setArchived(false, true);
+            serverConfig.setArchived(false);
             messageContextInteractionEvent.getHook().editOriginal("Serveur restauré avec succès").queue();
         }
     }

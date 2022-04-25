@@ -26,7 +26,7 @@ public class CommandPower implements DiscordCommand {
     public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         long power = messageContextInteractionEvent.getOption("power").getAsLong();
         Member memberTo = messageContextInteractionEvent.getOption("utilisateur").getAsMember();
-        Raymond.getInstance().getServerConfigsManager().getServerConfig(textChannel.getGuild().getId()).setUserPower(memberTo.getUser(), power, true);
+        Raymond.getInstance().getServerConfigsManager().getServerConfig(textChannel.getGuild().getId()).setUserPower(memberTo.getUser(), power);
         messageContextInteractionEvent.reply("Le power de " + memberTo.getAsMention() + " est maintenant de " + power).setEphemeral(true).queue();
     }
 

@@ -26,7 +26,7 @@ public class CommandConsolePower implements ConsoleCommand {
                         System.out.println("Le power doit être supérieur à 0");
                     } else {
                         RaymondServerConfig serverConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
-                        serverConfig.setUserPower(member.getUser(), power, true);
+                        serverConfig.setUserPower(member.getUser(), power);
                         System.out.println("Le power de " + member.getUser().getName() + " a bien été défini à " + power);
                     }
                 }

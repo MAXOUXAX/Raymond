@@ -38,7 +38,7 @@ public class CommandArchive implements DiscordCommand {
     @Override
     public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         Guild guild = textChannel.getGuild();
-        RaymondServerConfig raymondServerConfig = (RaymondServerConfig) raymond.getServerConfigsManager().getServerConfig(guild.getId());
+        RaymondServerConfig raymondServerConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
         if (raymondServerConfig.isArchived()) {
             messageContextInteractionEvent.reply("Ce serveur est déjà archivé, utilisez /unarchive pour le désarchiver").setEphemeral(true).queue();
         } else {
@@ -60,8 +60,8 @@ public class CommandArchive implements DiscordCommand {
                             .queue();
                 });
             });
-            raymondServerConfig.setPermissionBeforeArchive(permissionBeforeArchive, true);
-            raymondServerConfig.setArchived(true, true);
+            raymondServerConfig.setPermissionBeforeArchive(permissionBeforeArchive);
+            raymondServerConfig.setArchived(true);
             messageContextInteractionEvent.reply("Serveur archivé !").queue();
         }
     }
