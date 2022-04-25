@@ -68,7 +68,7 @@ public class CommandSchedule implements DiscordCommand {
 
     @Override
     public int power() {
-        return 10;
+        return 0;
     }
 
     @Override
