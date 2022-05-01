@@ -1,10 +1,13 @@
 package me.maxouxax.raymond.schedule;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.json.JSONObject;
 
 public class Room extends LabelledType {
 
-    public Room(String label) {
+    @BsonCreator
+    public Room(@BsonProperty("label") final String label) {
         super(label);
     }
 

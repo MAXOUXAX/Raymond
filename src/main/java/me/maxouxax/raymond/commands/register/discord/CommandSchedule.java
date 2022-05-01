@@ -58,7 +58,7 @@ public class CommandSchedule implements DiscordCommand {
 
                     RestAction.allOf(messageActions).queue(messages -> {
                         DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM").withLocale(Locale.FRANCE);
-                        slashCommandInteractionEvent.getHook().editOriginal("Voici les cours de la journée du " + dayFormatter.format(date) + ":tada: ").queue();
+                        slashCommandInteractionEvent.getHook().editOriginal("Voici les cours de la journée du " + dayFormatter.format(date) + " :tada: ").queue();
                     });
                 }
 
