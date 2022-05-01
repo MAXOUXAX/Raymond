@@ -1,18 +1,24 @@
 package me.maxouxax.raymond.schedule;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.json.JSONObject;
 
-public class Course {
+public class Course extends LabelledType {
 
-    private String id;
-    private String label;
-    private String color;
-    private String url;
-    private String type;
+    private final String id;
+    private final String color;
+    private final String url;
+    private final String type;
 
-    public Course(String id, String label, String color, String url, String type) {
+    @BsonCreator
+    public Course(@BsonProperty("id") final String id,
+                  @BsonProperty("label") final String label,
+                  @BsonProperty("color") final String color,
+                  @BsonProperty("url") final String url,
+                  @BsonProperty("type") final String type) {
+        super(label);
         this.id = id;
-        this.label = label;
         this.color = color;
         this.url = url;
         this.type = type;
@@ -26,40 +32,16 @@ public class Course {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public String getColor() {
         return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
 }
