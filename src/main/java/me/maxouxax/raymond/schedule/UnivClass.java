@@ -107,7 +107,7 @@ public class UnivClass {
             rows.add(ActionRow.of(button));
         }
         if (teachers.size() > 0) {
-            rows.add(ActionRow.of(teachers.stream().map(teacher -> Button.link("https://api.maxouxax.me/redirect?l=mailto:" + teacher.getEmail(), "Contacter " + teacher.getName()).withEmoji(Emoji.fromUnicode("\uD83D\uDCE7"))).toList()));
+            rows.add(ActionRow.of(teachers.stream().map(teacher -> Button.link("https://maxouxax.me/raymond/teacher/" + teacher.getEmail(), "Contacter " + teacher.getName()).withEmoji(Emoji.fromUnicode("\uD83D\uDCE7"))).toList()));
         }
         return rows;
     }
