@@ -1,3 +1,3 @@
-# Raymond
+# 👨‍🎓 Raymond
 
-Raymond — Discord BOT adding multiple features for Discord servers related to the Université de Lorraine
+Discord BOT adding multiple features for Discord servers related to my CS class
