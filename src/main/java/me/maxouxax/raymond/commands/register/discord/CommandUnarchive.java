@@ -39,7 +39,7 @@ public class CommandUnarchive implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         if(!textChannel.getType().isGuild()) return;
         GuildMessageChannel guildChannel = textChannel.asGuildMessageChannel();
 

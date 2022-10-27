@@ -21,9 +21,9 @@ public class CommandPower implements DiscordCommand {
     }
 
     @Override
-    @Option(name = "power", type = OptionType.INTEGER, isRequired = true, description = "Power à attribuer")
-    @Option(name = "utilisateur", type = OptionType.USER, isRequired = true, description = "Utilisateur auquel attribuer le power")
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    @Option(name = "power", type = OptionType.INTEGER, required = true, description = "Power à attribuer")
+    @Option(name = "utilisateur", type = OptionType.USER, required = true, description = "Utilisateur auquel attribuer le power")
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         long power = messageContextInteractionEvent.getOption("power").getAsLong();
         Member memberTo = messageContextInteractionEvent.getOption("utilisateur").getAsMember();
         Raymond.getInstance().getServerConfigsManager().getServerConfig(messageContextInteractionEvent.getGuild().getId()).setUserPower(memberTo.getUser(), power);

@@ -12,10 +12,10 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 public class CommandEmbed implements DiscordCommand {
 
     @Override
-    @Option(name = "titre", description = "Titre de l'embed", isRequired = true, type = OptionType.STRING)
-    @Option(name = "description", description = "Description de l'embed", isRequired = true, type = OptionType.STRING)
-    @Option(name = "lien-de-limage", description = "Image de l'embed", isRequired = false, type = OptionType.STRING)
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    @Option(name = "titre", description = "Titre de l'embed", required = true, type = OptionType.STRING)
+    @Option(name = "description", description = "Description de l'embed", required = true, type = OptionType.STRING)
+    @Option(name = "lien-de-limage", description = "Image de l'embed", required = false, type = OptionType.STRING)
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         String title = messageContextInteractionEvent.getOption("titre").getAsString();
         String description = messageContextInteractionEvent.getOption("description").getAsString();
         String image = "";

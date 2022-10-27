@@ -30,7 +30,7 @@ public class CommandPing implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         long ping = raymond.getJda().getGatewayPing();
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond)
                 .setTitle("DiscordAPI ping", raymond.getConfig().getWebsiteUrl())

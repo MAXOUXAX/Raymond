@@ -22,8 +22,8 @@ public class CommandGame implements DiscordCommand {
     }
 
     @Override
-    @Option(name = "nom-du-jeu", description = "Nom du jeu", type = OptionType.STRING, isRequired = true)
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    @Option(name = "nom-du-jeu", description = "Nom du jeu", type = OptionType.STRING, required = true)
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         Raymond.getInstance().getJda().getPresence().setActivity(Activity.playing(messageContextInteractionEvent.getOption("nom-du-jeu").getAsString()));
         messageContextInteractionEvent.reply("Jeu mis à jour avec succès !").setEphemeral(true).queue();
     }

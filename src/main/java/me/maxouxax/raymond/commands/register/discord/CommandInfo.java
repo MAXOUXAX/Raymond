@@ -26,8 +26,8 @@ public class CommandInfo implements DiscordCommand {
     }
 
     @Override
-    @Option(name = "utilisateur", description = "Utilisateur duquel les informations seront récupérées", type = OptionType.USER, isRequired = true)
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    @Option(name = "utilisateur", description = "Utilisateur duquel les informations seront récupérées", type = OptionType.USER, required = true)
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         Member memberTo = messageContextInteractionEvent.getOption("utilisateur").getAsMember();
         String name = memberTo.getEffectiveName();
         String tag = memberTo.getUser().getName() + "#" + memberTo.getUser().getDiscriminator();

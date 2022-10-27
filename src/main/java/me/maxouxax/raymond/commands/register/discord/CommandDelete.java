@@ -23,8 +23,8 @@ public class CommandDelete implements DiscordCommand {
     }
 
     @Override
-    @Option(name = "nombre-de-messages", description = "Nombre de messages à supprimer", type = OptionType.INTEGER, isRequired = true)
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    @Option(name = "nombre-de-messages", description = "Nombre de messages à supprimer", type = OptionType.INTEGER, required = true)
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         long messagesToDelete = messageContextInteractionEvent.getOption("nombre-de-messages").getAsLong();
         if (messagesToDelete > 100 || messagesToDelete < 2) {
             messageContextInteractionEvent.reply("Dû à une limitation de Discord, le nombre de messages à supprimer doit être compris entre 2 et 100").setEphemeral(true).queue();

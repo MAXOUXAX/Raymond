@@ -27,7 +27,7 @@ public class CommandVersion implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         try {
             EmbedCrafter embedCrafter = new EmbedCrafter(raymond);
             embedCrafter.setTitle("Raymond by MAXOUXAX — Équipier polyvalent", raymond.getConfig().getWebsiteUrl())

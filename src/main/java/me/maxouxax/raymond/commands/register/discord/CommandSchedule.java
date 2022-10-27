@@ -22,8 +22,8 @@ import java.util.*;
 public class CommandSchedule implements DiscordCommand {
 
     @Override
-    @Option(name = "date", description = "Date (ex. 12/01/2022) dont vous souhaitez consulter l'emploi du temps", isRequired = true, type = OptionType.STRING)
-    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent) {
+    @Option(name = "date", description = "Date (ex. 12/01/2022) dont vous souhaitez consulter l'emploi du temps", required = true, type = OptionType.STRING)
+    public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent) {
         String dateInput = slashCommandInteractionEvent.getOption("date").getAsString();
         String[] split = dateInput.split("/");
         if (split.length != 3) {
