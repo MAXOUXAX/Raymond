@@ -8,16 +8,17 @@ import me.maxouxax.raymond.config.RaymondConfig;
 import me.maxouxax.raymond.config.RaymondServerConfigsManager;
 import me.maxouxax.raymond.listeners.DiscordListener;
 import me.maxouxax.raymond.schedule.UnivConnector;
+import me.maxouxax.supervisor.commands.ConsoleCommand;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -60,30 +61,22 @@ public class Raymond extends Supervised {
         }
 
         try {
-            jda = JDABuilder.create(getConfig().getDiscordToken(), GatewayIntent.GUILD_MESSAGES,
-                            GatewayIntent.DIRECT_MESSAGE_REACTIONS,
-                            GatewayIntent.DIRECT_MESSAGE_TYPING,
-                            GatewayIntent.DIRECT_MESSAGES,
-                            GatewayIntent.GUILD_BANS,
-                            GatewayIntent.GUILD_EMOJIS,
-                            GatewayIntent.GUILD_MEMBERS,
-                            GatewayIntent.GUILD_INVITES,
-                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                            GatewayIntent.GUILD_MESSAGE_TYPING,
-                            GatewayIntent.GUILD_PRESENCES,
-                            GatewayIntent.GUILD_VOICE_STATES)
+            jda = JDABuilder.create(getConfig().getDiscordToken(), EnumSet.allOf(GatewayIntent.class))
                     .build();
             jda.addEventListener(new DiscordListener());
             jda.getPresence().setActivity(Activity.playing(getConfig().getGameName()));
             jda.awaitReady();
             super.bindListeners();
-        } catch (LoginException | IllegalArgumentException | NullPointerException | InterruptedException e) {
+        } catch (IllegalArgumentException | NullPointerException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        supervisor.getCommandManager().registerConsoleCommand(new CommandConsoleHelp());
-        supervisor.getCommandManager().registerConsoleCommand(new CommandConsoleSay());
-        supervisor.getCommandManager().registerConsoleCommand(new CommandConsolePower());
+        List<ConsoleCommand> consoleCommands = Arrays.asList(
+                new CommandConsoleHelp(),
+                new CommandConsolePower(),
+                new CommandConsoleSay()
+        );
+        consoleCommands.forEach(consoleCommand -> supervisor.getCommandManager().registerConsoleCommand(consoleCommand));
 
         List<DiscordCommand> discordCommands = Arrays.asList(
                 new CommandArchive(),
