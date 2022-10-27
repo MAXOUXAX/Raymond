@@ -57,7 +57,7 @@
     <dependencies>
         <dependency>
             <groupId>me.maxouxax</groupId>
-            <artifactId>Supervisor</artifactId>
+            <artifactId>supervisor</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
