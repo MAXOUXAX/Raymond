@@ -7,11 +7,11 @@ import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.commands.slashannotations.Option;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 
 import java.awt.*;
 import java.time.ZonedDateTime;
@@ -23,7 +23,7 @@ public class CommandSchedule implements DiscordCommand {
 
     @Override
     @Option(name = "date", description = "Date (ex. 12/01/2022) dont vous souhaitez consulter l'emploi du temps", isRequired = true, type = OptionType.STRING)
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent) {
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent) {
         String dateInput = slashCommandInteractionEvent.getOption("date").getAsString();
         String[] split = dateInput.split("/");
         if (split.length != 3) {
@@ -32,7 +32,7 @@ public class CommandSchedule implements DiscordCommand {
             int day = Integer.parseInt(split[0]);
             int month = Integer.parseInt(split[1]);
             int year = Integer.parseInt(split[2]);
-            if(split[2].length() == 2) year = Integer.parseInt("20" + split[2]);
+            if (split[2].length() == 2) year = Integer.parseInt("20" + split[2]);
             if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2020 || year > 2099) {
                 slashCommandInteractionEvent.reply("Format de date invalide, il doit être au format DD/MM/YYYY").setEphemeral(true).queue();
             } else {
@@ -51,17 +51,19 @@ public class CommandSchedule implements DiscordCommand {
                 } else {
                     slashCommandInteractionEvent.getHook().sendMessage("Récupération des cours...").queue();
 
-                    List<MessageAction> messageActions = univSchedule.stream().map(univClass -> slashCommandInteractionEvent.getTextChannel()
-                            .sendMessageEmbeds(univClass.toEmbed().build())
-                            .setActionRows(univClass.toActionRow()))
-                            .toList();
+                    List<MessageCreateAction> messageActions = univSchedule.stream().map(univClass -> {
+                        MessageCreateAction messageCreateAction = slashCommandInteractionEvent.getChannel()
+                                .sendMessageEmbeds(univClass.toEmbed().build());
+
+                        univClass.toActionRow().forEach(itemComponents -> messageCreateAction.addActionRow(itemComponents.getComponents()));
+                        return messageCreateAction;
+                    }).toList();
 
                     RestAction.allOf(messageActions).queue(messages -> {
                         DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM").withLocale(Locale.FRANCE);
                         slashCommandInteractionEvent.getHook().editOriginal("Voici les cours de la journée du " + dayFormatter.format(date) + " :tada: ").queue();
                     });
                 }
-
             }
         }
     }
@@ -73,7 +75,7 @@ public class CommandSchedule implements DiscordCommand {
 
     @Override
     public String name() {
-        return "edt";
+        return "emploidutemps";
     }
 
     @Override

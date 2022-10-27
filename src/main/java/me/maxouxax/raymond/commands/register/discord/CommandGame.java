@@ -5,7 +5,7 @@ import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.commands.slashannotations.Option;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
@@ -23,7 +23,7 @@ public class CommandGame implements DiscordCommand {
 
     @Override
     @Option(name = "nom-du-jeu", description = "Nom du jeu", type = OptionType.STRING, isRequired = true)
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         Raymond.getInstance().getJda().getPresence().setActivity(Activity.playing(messageContextInteractionEvent.getOption("nom-du-jeu").getAsString()));
         messageContextInteractionEvent.reply("Jeu mis à jour avec succès !").setEphemeral(true).queue();
     }

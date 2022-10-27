@@ -5,7 +5,12 @@ import me.maxouxax.raymond.config.RaymondServerConfig;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.jda.pojos.ChannelPermission;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.HashMap;
@@ -36,8 +41,11 @@ public class CommandArchive implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
-        Guild guild = textChannel.getGuild();
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+        if(!textChannel.getType().isGuild()) return;
+        GuildMessageChannel guildChannel = textChannel.asGuildMessageChannel();
+
+        Guild guild = guildChannel.getGuild();
         RaymondServerConfig raymondServerConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
         if (raymondServerConfig.isArchived()) {
             messageContextInteractionEvent.reply("Ce serveur est déjà archivé, utilisez /unarchive pour le désarchiver").setEphemeral(true).queue();

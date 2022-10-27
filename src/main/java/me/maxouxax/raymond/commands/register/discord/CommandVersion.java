@@ -5,7 +5,7 @@ import me.maxouxax.supervisor.Supervisor;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 public class CommandVersion implements DiscordCommand {
@@ -27,7 +27,7 @@ public class CommandVersion implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         try {
             EmbedCrafter embedCrafter = new EmbedCrafter(raymond);
             embedCrafter.setTitle("Raymond by MAXOUXAX — Équipier polyvalent", raymond.getConfig().getWebsiteUrl())

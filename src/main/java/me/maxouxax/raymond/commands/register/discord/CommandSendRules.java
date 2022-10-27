@@ -6,7 +6,9 @@ import me.maxouxax.supervisor.Supervisor;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 public class CommandSendRules implements DiscordCommand {
@@ -28,9 +30,12 @@ public class CommandSendRules implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+        if(!textChannel.getType().isGuild()) return;
+        GuildMessageChannel guildChannel = textChannel.asGuildMessageChannel();
+
         messageContextInteractionEvent.reply("Envoi des règles en cours...").setEphemeral(true).queue();
-        RaymondServerConfig raymondServerConfig = raymond.getServerConfigsManager().getServerConfig(textChannel.getGuild().getId());
+        RaymondServerConfig raymondServerConfig = raymond.getServerConfigsManager().getServerConfig(guildChannel.getGuild().getId());
 
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond)
                 .setImageUrl(raymondServerConfig.getRulesBanner() + "?size=1000")
@@ -73,7 +78,7 @@ public class CommandSendRules implements DiscordCommand {
                 .setThumbnailUrl(raymondServerConfig.getRulesAttentionThumbnail())
                 .setDescription("Si vous ne respectez pas une des règles précédemment citées, vous recevrez un avertissement.\n\nAu bout de 3 avertissements, vous serez banni définitivement du serveur par notre équipe de modération.\n\n**DE PLUS**, si vous commettez une sanction très grave, l'équipe de modération se réserve le droit de vous bannir sans avertissement.")
                 .setFooter("Dernière mise à jour des règles");
-        TextChannel rulesTextChannel = textChannel.getGuild().getTextChannelById(raymondServerConfig.getRulesTextChannelId());
+        TextChannel rulesTextChannel = guildChannel.getGuild().getTextChannelById(raymondServerConfig.getRulesTextChannelId());
         if (rulesTextChannel == null) {
             Supervisor.getInstance().getErrorHandler().handleException(new Exception("textChannel == null (the textchannel id or the guildid (or both) may not have been set in the config file)"));
         } else {

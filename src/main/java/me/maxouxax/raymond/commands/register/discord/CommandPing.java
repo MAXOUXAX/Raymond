@@ -6,7 +6,7 @@ import me.maxouxax.supervisor.utils.EmbedCrafter;
 import me.maxouxax.supervisor.utils.UserUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.awt.*;
@@ -30,8 +30,8 @@ public class CommandPing implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
-        long ping = textChannel.getGuild().getJDA().getGatewayPing();
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+        long ping = raymond.getJda().getGatewayPing();
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond)
                 .setTitle("DiscordAPI ping", raymond.getConfig().getWebsiteUrl())
                 .setThumbnailUrl(UserUtils.getAvatarUrl(member) + "?size=256")

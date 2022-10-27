@@ -3,7 +3,7 @@ package me.maxouxax.raymond.schedule;
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.config.UnivConfig;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
-import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.bson.codecs.pojo.annotations.BsonCreator;

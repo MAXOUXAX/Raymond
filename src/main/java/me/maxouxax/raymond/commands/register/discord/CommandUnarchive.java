@@ -4,7 +4,12 @@ import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.config.RaymondServerConfig;
 import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.jda.pojos.ChannelPermission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.IPermissionHolder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.HashMap;
@@ -34,8 +39,11 @@ public class CommandUnarchive implements DiscordCommand {
     }
 
     @Override
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
-        Guild guild = textChannel.getGuild();
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+        if(!textChannel.getType().isGuild()) return;
+        GuildMessageChannel guildChannel = textChannel.asGuildMessageChannel();
+
+        Guild guild = guildChannel.getGuild();
         RaymondServerConfig serverConfig = raymond.getServerConfigsManager().getServerConfig(guild.getId());
         if (!serverConfig.isArchived()) {
             messageContextInteractionEvent.reply("Ce serveur n'est pas archivé, utilisez /archive pour l'archiver").setEphemeral(true).queue();
@@ -49,9 +57,9 @@ public class CommandUnarchive implements DiscordCommand {
                 permissionBeforeArchive.get(channel.getId()).forEach(channelPermission -> {
                     IPermissionHolder permissionHolder = channelPermission.isMemberPermission() ? channel.getGuild().getMemberById(channelPermission.getHolderId()) : channel.getGuild().getRoleById(channelPermission.getHolderId());
                     if (permissionHolder != null) {
-                        channel.getPermissionContainer().putPermissionOverride(permissionHolder)
-                                .setAllow(channelPermission.getAllowedRaw())
-                                .setDeny(channelPermission.getDeniedRaw())
+                        channel.getPermissionContainer().upsertPermissionOverride(permissionHolder)
+                                .setAllowed(channelPermission.getAllowedRaw())
+                                .setDenied(channelPermission.getDeniedRaw())
                                 .queue();
                     }
                 });

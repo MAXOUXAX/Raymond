@@ -6,7 +6,7 @@ import me.maxouxax.supervisor.commands.slashannotations.Option;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
@@ -27,7 +27,7 @@ public class CommandInfo implements DiscordCommand {
 
     @Override
     @Option(name = "utilisateur", description = "Utilisateur duquel les informations seront récupérées", type = OptionType.USER, isRequired = true)
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         Member memberTo = messageContextInteractionEvent.getOption("utilisateur").getAsMember();
         String name = memberTo.getEffectiveName();
         String tag = memberTo.getUser().getName() + "#" + memberTo.getUser().getDiscriminator();

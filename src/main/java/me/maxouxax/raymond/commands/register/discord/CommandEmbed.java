@@ -5,7 +5,7 @@ import me.maxouxax.supervisor.commands.DiscordCommand;
 import me.maxouxax.supervisor.commands.slashannotations.Option;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
@@ -15,7 +15,7 @@ public class CommandEmbed implements DiscordCommand {
     @Option(name = "titre", description = "Titre de l'embed", isRequired = true, type = OptionType.STRING)
     @Option(name = "description", description = "Description de l'embed", isRequired = true, type = OptionType.STRING)
     @Option(name = "lien-de-limage", description = "Image de l'embed", isRequired = false, type = OptionType.STRING)
-    public void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
+    public void onCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         String title = messageContextInteractionEvent.getOption("titre").getAsString();
         String description = messageContextInteractionEvent.getOption("description").getAsString();
         String image = "";
