@@ -25,7 +25,7 @@ public class RaymondServerConfig extends ServerConfig {
     private Map<String, Long> usersPower;
 
     @BsonProperty("archived")
-    private boolean archived;
+    private Boolean archived;
 
     @BsonProperty("permission_before_archive")
     private HashMap<String, List<ChannelPermission>> permissionBeforeArchive;
@@ -159,7 +159,7 @@ public class RaymondServerConfig extends ServerConfig {
     }
 
     @BsonIgnore
-    public void setArchived(boolean archived) {
+    public void setArchived(Boolean archived) {
         this.archived = archived;
         save();
     }
