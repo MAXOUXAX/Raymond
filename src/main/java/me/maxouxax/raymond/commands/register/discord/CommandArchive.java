@@ -70,6 +70,7 @@ public class CommandArchive implements DiscordCommand {
             });
             raymondServerConfig.setPermissionBeforeArchive(permissionBeforeArchive);
             raymondServerConfig.setArchived(true);
+            raymondServerConfig.saveConfig();
             messageContextInteractionEvent.reply("Serveur archivé !").queue();
         }
     }

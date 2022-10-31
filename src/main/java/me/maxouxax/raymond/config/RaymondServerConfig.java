@@ -1,7 +1,6 @@
 package me.maxouxax.raymond.config;
 
 import me.maxouxax.raymond.Raymond;
-import me.maxouxax.raymond.schedule.UnivSchedule;
 import me.maxouxax.supervisor.jda.pojos.ChannelPermission;
 import me.maxouxax.supervisor.serversconfig.ServerConfig;
 import me.maxouxax.supervisor.serversconfig.ServerConfigsManager;
@@ -54,7 +53,7 @@ public class RaymondServerConfig extends ServerConfig {
     @BsonCreator
     public RaymondServerConfig(@BsonProperty("_id") final String serverId,
                                @BsonProperty("users_power") final Map<String, Long> usersPower,
-                               @BsonProperty("archived") final boolean archived,
+                               @BsonProperty("archived") final Boolean archived,
                                @BsonProperty("permission_before_archive") final HashMap<String, List<ChannelPermission>> permissionBeforeArchive,
                                @BsonProperty("rules_banner") final String rulesBanner,
                                @BsonProperty("rules_thumbnail") final String rulesThumbnail,
@@ -74,7 +73,7 @@ public class RaymondServerConfig extends ServerConfig {
         this.univServerConfig = univServerConfig;
     }
 
-    public RaymondServerConfig(String serverId, boolean archived) {
+    public RaymondServerConfig(String serverId, Boolean archived) {
         this(serverId, new HashMap<>(), archived, new HashMap<>(), "", "", "", "", "", new UnivServerConfig());
     }
 
@@ -83,7 +82,7 @@ public class RaymondServerConfig extends ServerConfig {
         return new RaymondServerConfig(serverId, false);
     }
 
-    public void save() {
+    public void saveConfig() {
         getServerConfigsManager().saveServerConfig(this);
     }
 
@@ -97,10 +96,6 @@ public class RaymondServerConfig extends ServerConfig {
         return Raymond.getInstance().getServerConfigsManager();
     }
 
-    /**
-     * Regular getters
-     */
-
     @Override
     public String getServerId() {
         return serverId;
@@ -110,7 +105,7 @@ public class RaymondServerConfig extends ServerConfig {
         return usersPower;
     }
 
-    public boolean isArchived() {
+    public Boolean isArchived() {
         return archived;
     }
 
@@ -142,74 +137,44 @@ public class RaymondServerConfig extends ServerConfig {
         return univServerConfig;
     }
 
-    /**
-     * Regular setters (saving enabled)
-     */
-
-    @BsonIgnore
     public void setServerId(String serverId) {
         this.serverId = serverId;
-        save();
     }
 
-    @BsonIgnore
     public void setUsersPower(Map<String, Long> usersPower) {
         this.usersPower = usersPower;
-        save();
     }
 
-    @BsonIgnore
     public void setArchived(Boolean archived) {
         this.archived = archived;
-        save();
     }
 
-    @BsonIgnore
     public void setPermissionBeforeArchive(HashMap<String, List<ChannelPermission>> permissionBeforeArchive) {
         this.permissionBeforeArchive = permissionBeforeArchive;
-        save();
     }
 
-    @BsonIgnore
     public void setRulesBanner(String rulesBanner) {
         this.rulesBanner = rulesBanner;
-        save();
     }
 
-    @BsonIgnore
     public void setRulesThumbnail(String rulesThumbnail) {
         this.rulesThumbnail = rulesThumbnail;
-        save();
     }
 
-    @BsonIgnore
     public void setRulesModerationThumbnail(String rulesModerationThumbnail) {
         this.rulesModerationThumbnail = rulesModerationThumbnail;
-        save();
     }
 
-    @BsonIgnore
     public void setRulesAttentionThumbnail(String rulesAttentionThumbnail) {
         this.rulesAttentionThumbnail = rulesAttentionThumbnail;
-        save();
     }
 
-    @BsonIgnore
     public void setRulesTextChannelId(String rulesTextChannelId) {
         this.rulesTextChannelId = rulesTextChannelId;
-        save();
     }
 
-    @BsonIgnore
     public void setUserPower(User user, long power) {
         usersPower.put(user.getId(), power);
-        save();
-    }
-
-    @BsonIgnore
-    public void updateUnivSchedule(UnivSchedule univSchedule){
-        if(this.univServerConfig != null) this.univServerConfig.setUnivSchedule(univSchedule);
-        save();
     }
 
 }
