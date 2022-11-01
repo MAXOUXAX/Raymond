@@ -1,5 +1,6 @@
 package me.maxouxax.raymond;
 
+import me.maxouxax.raymond.commands.interactions.EventCreateMessageInteraction;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleHelp;
 import me.maxouxax.raymond.commands.register.console.CommandConsolePower;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleSay;
@@ -8,8 +9,10 @@ import me.maxouxax.raymond.config.RaymondConfig;
 import me.maxouxax.raymond.config.RaymondServerConfigsManager;
 import me.maxouxax.raymond.listeners.DiscordListener;
 import me.maxouxax.raymond.schedule.UnivConnector;
-import me.maxouxax.supervisor.commands.ConsoleCommand;
-import me.maxouxax.supervisor.commands.DiscordCommand;
+import me.maxouxax.supervisor.interactions.commands.ConsoleCommand;
+import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
+import me.maxouxax.supervisor.interactions.message.DiscordMessageInteraction;
+import me.maxouxax.supervisor.interactions.modals.DiscordModalInteraction;
 import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -76,7 +79,7 @@ public class Raymond extends Supervised {
                 new CommandConsolePower(),
                 new CommandConsoleSay()
         );
-        consoleCommands.forEach(consoleCommand -> supervisor.getCommandManager().registerConsoleCommand(consoleCommand));
+        consoleCommands.forEach(consoleCommand -> supervisor.getInteractionManager().registerConsoleCommand(consoleCommand));
 
         List<DiscordCommand> discordCommands = Arrays.asList(
                 new CommandArchive(),
@@ -89,11 +92,25 @@ public class Raymond extends Supervised {
                 new CommandSchedule(),
                 new CommandSendRules(this),
                 new CommandUnarchive(),
-                new CommandVersion(this)
+                new CommandVersion(this),
+                new CommandEvent()
         );
-        discordCommands.forEach(discordCommand -> supervisor.getCommandManager().registerCommand(this, discordCommand));
+        discordCommands.forEach(discordCommand -> supervisor.getInteractionManager().registerCommand(this, discordCommand));
 
-        supervisor.getCommandManager().updateCommands(this);
+        supervisor.getInteractionManager().updateCommands(this);
+
+        List<DiscordMessageInteraction> discordMessageInteractions = Arrays.asList();
+
+        List<DiscordModalInteraction> discordModalInteractions = Arrays.asList(
+                new EventCreateMessageInteraction()
+        );
+
+        discordMessageInteractions.forEach(discordMessageInteraction -> {
+            supervisor.getInteractionManager().registerMessageInteraction(this, discordMessageInteraction);
+        });
+        discordModalInteractions.forEach(discordModalInteraction -> {
+            supervisor.getInteractionManager().registerModalInteraction(this, discordModalInteraction);
+        });
     }
 
     @Override
