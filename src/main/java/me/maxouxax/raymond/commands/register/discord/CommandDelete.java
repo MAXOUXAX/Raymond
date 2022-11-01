@@ -1,7 +1,7 @@
 package me.maxouxax.raymond.commands.register.discord;
 
-import me.maxouxax.supervisor.commands.DiscordCommand;
-import me.maxouxax.supervisor.commands.slashannotations.Option;
+import me.maxouxax.supervisor.interactions.annotations.Option;
+import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;

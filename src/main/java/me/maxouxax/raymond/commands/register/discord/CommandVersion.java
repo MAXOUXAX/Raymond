@@ -2,7 +2,7 @@ package me.maxouxax.raymond.commands.register.discord;
 
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.commands.DiscordCommand;
+import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -33,7 +33,7 @@ public class CommandVersion implements DiscordCommand {
             embedCrafter.setTitle("Raymond by MAXOUXAX — Équipier polyvalent", raymond.getConfig().getWebsiteUrl())
                     .setColor(3447003)
                     .addField("Je suis en version", raymond.getVersion(), true)
-                    .addField("Je gère", Supervisor.getInstance().getCommandManager().getDiscordCommandsFromSupervised(raymond).size() + " commandes Discord", true);
+                    .addField("Je gère", Supervisor.getInstance().getInteractionManager().getDiscordCommandsFromSupervised(raymond).size() + " commandes Discord", true);
             messageContextInteractionEvent.replyEmbeds(embedCrafter.build()).queue();
         } catch (Exception e) {
             Supervisor.getInstance().getErrorHandler().handleException(e);

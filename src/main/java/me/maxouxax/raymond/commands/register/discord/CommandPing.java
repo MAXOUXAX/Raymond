@@ -1,7 +1,7 @@
 package me.maxouxax.raymond.commands.register.discord;
 
 import me.maxouxax.raymond.Raymond;
-import me.maxouxax.supervisor.commands.DiscordCommand;
+import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import me.maxouxax.supervisor.utils.UserUtils;
 import net.dv8tion.jda.api.entities.Member;

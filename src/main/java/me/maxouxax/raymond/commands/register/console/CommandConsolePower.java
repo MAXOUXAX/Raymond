@@ -2,7 +2,7 @@ package me.maxouxax.raymond.commands.register.console;
 
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.config.RaymondServerConfig;
-import me.maxouxax.supervisor.commands.ConsoleCommand;
+import me.maxouxax.supervisor.interactions.commands.ConsoleCommand;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 

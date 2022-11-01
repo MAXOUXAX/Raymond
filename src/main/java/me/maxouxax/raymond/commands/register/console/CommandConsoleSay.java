@@ -1,7 +1,7 @@
 package me.maxouxax.raymond.commands.register.console;
 
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.commands.ConsoleCommand;
+import me.maxouxax.supervisor.interactions.commands.ConsoleCommand;
 
 public class CommandConsoleSay implements ConsoleCommand {
 

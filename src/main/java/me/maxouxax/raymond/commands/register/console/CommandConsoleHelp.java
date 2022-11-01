@@ -1,7 +1,7 @@
 package me.maxouxax.raymond.commands.register.console;
 
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.commands.ConsoleCommand;
+import me.maxouxax.supervisor.interactions.commands.ConsoleCommand;
 
 public class CommandConsoleHelp implements ConsoleCommand {
 
@@ -33,7 +33,7 @@ public class CommandConsoleHelp implements ConsoleCommand {
 
     @Override
     public void onCommand(String[] args) {
-        for (ConsoleCommand command : supervisor.getCommandManager().getConsoleCommands()) {
+        for (ConsoleCommand command : supervisor.getInteractionManager().getConsoleCommands()) {
             supervisor.getLogger().info(command.name() + " - " + command.description() + " - " + command.help(), true);
         }
     }

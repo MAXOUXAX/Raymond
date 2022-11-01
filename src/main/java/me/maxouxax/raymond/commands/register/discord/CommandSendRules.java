@@ -3,7 +3,7 @@ package me.maxouxax.raymond.commands.register.discord;
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.config.RaymondServerConfig;
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.commands.DiscordCommand;
+import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;

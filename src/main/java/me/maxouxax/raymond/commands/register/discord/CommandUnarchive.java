@@ -2,7 +2,7 @@ package me.maxouxax.raymond.commands.register.discord;
 
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.config.RaymondServerConfig;
-import me.maxouxax.supervisor.commands.DiscordCommand;
+import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import me.maxouxax.supervisor.jda.pojos.ChannelPermission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IPermissionHolder;
