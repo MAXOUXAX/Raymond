@@ -73,9 +73,15 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
             ScheduledEvent scheduledEvent = action.complete();
 
             String eventLink = "https://discord.com/events/" + event.getGuild().getId() + "/" + scheduledEvent.getId();
+            String eventDates = eventDateFormat.format(startDate);
+            if(startDate.getDate() == endDate.getDate() && startDate.getMonth() == endDate.getMonth() && startDate.getYear() == endDate.getYear()){
+                eventDates += " à " + new SimpleDateFormat("HH:mm").format(endDate);
+            }else{
+                eventDates += " au " + eventDateFormat.format(endDate);
+            }
 
             forumChannel.createForumPost(name, new MessageCreateBuilder()
-                    .addContent("# " + eventDateFormat.format(startDate) + " - " + eventDateFormat.format(endDate) + "\n")
+                    .addContent("# " + eventDates + "\n")
                     .addContent("## " + scheduledEvent.getLocation() + "\n")
                     .addContent("\n")
                     .addContent(description + "\n")
