@@ -84,12 +84,11 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
             String eventLink = "https://discord.com/events/" + event.getGuild().getId() + "/" + scheduledEvent.getId();
 
             forumChannel.createForumPost(name, new MessageCreateBuilder()
-                    .addContent("# " + name + "\n")
-                    .addContent("## " + eventDateFormat.format(startDate) + " - " + eventDateFormat.format(endDate) + "\n")
+                    .addContent("# " + eventDateFormat.format(startDate) + " - " + eventDateFormat.format(endDate) + "\n")
+                    .addContent("## " + scheduledEvent.getLocation() + "\n")
                     .addContent("\n")
                     .addContent(description + "\n")
                     .addContent("\n")
-                    .addContent("### " + (isUrl ? "" : "Aura lieu en ") + scheduledEvent.getLocation() + "\n")
                     .addContent("Événement Discord: " + eventLink)
                     .build()
             ).queue(forumPost -> {
