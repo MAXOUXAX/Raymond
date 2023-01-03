@@ -11,8 +11,6 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.requests.restaction.ScheduledEventAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,13 +71,6 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
 
             ScheduledEventAction action = event.getGuild().createScheduledEvent(name, location, start, end).setDescription(description);
             ScheduledEvent scheduledEvent = action.complete();
-
-            boolean isUrl = false;
-            try {
-                URL url = new URL(scheduledEvent.getLocation());
-                isUrl = true;
-            } catch (MalformedURLException ignored) {
-            }
 
             String eventLink = "https://discord.com/events/" + event.getGuild().getId() + "/" + scheduledEvent.getId();
 
