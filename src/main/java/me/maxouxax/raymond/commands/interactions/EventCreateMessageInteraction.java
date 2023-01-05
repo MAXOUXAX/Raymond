@@ -11,17 +11,18 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.requests.restaction.ScheduledEventAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class EventCreateMessageInteraction implements DiscordModalInteraction {
 
-    private SimpleDateFormat eventDateFormat = new SimpleDateFormat("EEEE dd MMMM à HH:mm", Locale.FRANCE);
+    private SimpleDateFormat eventDateFormat = new SimpleDateFormat("EEEE dd MMMM", Locale.FRANCE);
+    private SimpleDateFormat eventHourFormat = new SimpleDateFormat("HH:mm", Locale.FRANCE);
     private ZoneId paris = ZoneId.of("Europe/Paris");
     private final Raymond raymond;
 
@@ -63,7 +64,9 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
         }
 
         try {
-            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            dateFormat.set2DigitYearStart(Calendar.getInstance().getTime());
+
             Date startDate = dateFormat.parse(startDateString);
             Date endDate = dateFormat.parse(endDateString);
             OffsetDateTime start = OffsetDateTime.ofInstant(startDate.toInstant(), paris);
@@ -73,22 +76,14 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
             ScheduledEvent scheduledEvent = action.complete();
 
             String eventLink = "https://discord.com/events/" + event.getGuild().getId() + "/" + scheduledEvent.getId();
-            String eventDates = eventDateFormat.format(startDate);
-            if(startDate.getDate() == endDate.getDate() && startDate.getMonth() == endDate.getMonth() && startDate.getYear() == endDate.getYear()){
-                eventDates += " à " + new SimpleDateFormat("HH:mm").format(endDate);
-            }else{
-                eventDates += " au " + eventDateFormat.format(endDate);
+            String eventDates = eventDateFormat.format(start);
+            if (start.getYear() == end.getYear() && start.getMonth() == end.getMonth() && start.getDayOfMonth() == end.getDayOfMonth()) {
+                eventDates += " de " + eventHourFormat.format(start) + " à " + eventHourFormat.format(end);
+            } else {
+                eventDates += " à " + eventHourFormat.format(start) + " - " + eventDateFormat.format(end) + " à " + eventHourFormat.format(end);
             }
 
-            forumChannel.createForumPost(name, new MessageCreateBuilder()
-                    .addContent("# " + eventDates + "\n")
-                    .addContent("## " + scheduledEvent.getLocation() + "\n")
-                    .addContent("\n")
-                    .addContent(description + "\n")
-                    .addContent("\n")
-                    .addContent("Événement Discord: " + eventLink)
-                    .build()
-            ).queue(forumPost -> {
+            forumChannel.createForumPost(name, new MessageCreateBuilder().addContent("# " + eventDates + "\n").addContent("## " + scheduledEvent.getLocation() + "\n").addContent("\n").addContent(description + "\n").addContent("\n").addContent("Événement Discord: " + eventLink).build()).queue(forumPost -> {
                 ThreadChannel thread = forumPost.getThreadChannel();
                 Role role = thread.getGuild().getRoleById(serverConfig.getDiscordForumRoleId());
                 thread.sendMessage("Nouvel événement ! " + (role != null ? role.getAsMention() : "")).queue();
