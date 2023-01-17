@@ -83,11 +83,18 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
                 eventDates += " à " + eventHourFormat.format(start) + " - " + eventDateFormat.format(end) + " à " + eventHourFormat.format(end);
             }
 
-            forumChannel.createForumPost(name, new MessageCreateBuilder().addContent("# " + eventDates + "\n").addContent("## " + scheduledEvent.getLocation() + "\n").addContent("\n").addContent(description + "\n").addContent("\n").addContent("Événement Discord: " + eventLink).build()).queue(forumPost -> {
-                ThreadChannel thread = forumPost.getThreadChannel();
-                Role role = thread.getGuild().getRoleById(serverConfig.getDiscordForumRoleId());
-                thread.sendMessage("Nouvel événement ! " + (role != null ? role.getAsMention() : "")).queue();
-            });
+            forumChannel.createForumPost(name, new MessageCreateBuilder()
+                .addContent("# " + eventDates + "\n")
+                .addContent("## " + scheduledEvent.getLocation() + "\n")
+                .addContent("\n")
+                .addContent(description + "\n")
+                .addContent("\n")
+                .addContent("Événement Discord: " + eventLink)
+                .build()).queue(forumPost -> {
+                  ThreadChannel thread = forumPost.getThreadChannel();
+                  Role role = thread.getGuild().getRoleById(serverConfig.getDiscordForumRoleId());
+                  thread.sendMessage("Nouvel événement ! " + (role != null ? role.getAsMention() : "")).queue();
+              });
 
             event.reply("L'événement a bien été créé !").queue();
         } catch (ParseException e) {
