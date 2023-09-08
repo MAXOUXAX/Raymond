@@ -93,7 +93,7 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
                 .build()).queue(forumPost -> {
                   ThreadChannel thread = forumPost.getThreadChannel();
                   Role role = thread.getGuild().getRoleById(serverConfig.getDiscordForumRoleId());
-                  thread.sendMessage("Nouvel événement ! " + (role != null ? role.getAsMention() : "")).queue();
+                  thread.sendMessage("@silent Nouvel événement ! " + (role != null ? role.getAsMention() : "")).queue();
               });
 
             event.reply("L'événement a bien été créé !").queue();
