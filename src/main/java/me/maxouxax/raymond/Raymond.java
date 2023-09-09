@@ -1,5 +1,7 @@
 package me.maxouxax.raymond;
 
+import me.maxouxax.multi4j.MultiClient;
+import me.maxouxax.multi4j.exceptions.MultiLoginException;
 import me.maxouxax.raymond.commands.interactions.EventCreateMessageInteraction;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleHelp;
 import me.maxouxax.raymond.commands.register.console.CommandConsolePower;
@@ -8,7 +10,6 @@ import me.maxouxax.raymond.commands.register.discord.*;
 import me.maxouxax.raymond.config.RaymondConfig;
 import me.maxouxax.raymond.config.RaymondServerConfigsManager;
 import me.maxouxax.raymond.listeners.DiscordListener;
-import me.maxouxax.raymond.schedule.UnivConnector;
 import me.maxouxax.supervisor.interactions.commands.ConsoleCommand;
 import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import me.maxouxax.supervisor.interactions.message.DiscordMessageInteraction;
@@ -18,8 +19,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -29,7 +28,7 @@ public class Raymond extends Supervised {
 
     private static Raymond instance;
     private String version;
-    private UnivConnector univConnector;
+    private MultiClient multiClient;
     private ScheduledExecutorService scheduledExecutorService;
 
     public static Raymond getInstance() {
@@ -55,12 +54,14 @@ public class Raymond extends Supervised {
         loadConfig(RaymondConfig.class);
 
         this.version = this.getDescription().getVersion();
-        this.univConnector = new UnivConnector();
+        this.multiClient = new MultiClient.Builder()
+                .withMultiConfig(getConfig().getMultiConfig())
+                .build();
 
         try {
-            this.univConnector.connect();
-        } catch (IOException | URISyntaxException | InterruptedException e) {
-            e.printStackTrace();
+            this.multiClient.connect();
+        } catch (MultiLoginException e) {
+            throw new RuntimeException(e);
         }
 
         try {
@@ -134,8 +135,8 @@ public class Raymond extends Supervised {
         return (RaymondServerConfigsManager) this.serverConfigsManager;
     }
 
-    public UnivConnector getUnivConnector() {
-        return univConnector;
+    public MultiClient getMultiClient() {
+        return multiClient;
     }
 
 }

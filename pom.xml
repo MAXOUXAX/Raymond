@@ -56,6 +56,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>me.maxouxax.multi4j</groupId>
+            <artifactId>multi4j</artifactId>
+            <version>1.1.0-RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>me.maxouxax</groupId>
             <artifactId>supervisor</artifactId>
             <version>1.1.0-SNAPSHOT</version>

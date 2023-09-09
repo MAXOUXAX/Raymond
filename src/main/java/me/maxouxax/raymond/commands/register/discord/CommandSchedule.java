@@ -1,8 +1,9 @@
 package me.maxouxax.raymond.commands.register.discord;
 
+import me.maxouxax.multi4j.MultiHelper;
+import me.maxouxax.multi4j.schedule.UnivClass;
 import me.maxouxax.raymond.Raymond;
-import me.maxouxax.raymond.schedule.UnivClass;
-import me.maxouxax.raymond.schedule.UnivHelper;
+import me.maxouxax.raymond.schedule.DiscordUnivUtils;
 import me.maxouxax.supervisor.interactions.annotations.Option;
 import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
@@ -14,6 +15,8 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 
 import java.awt.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -41,8 +44,13 @@ public class CommandSchedule implements DiscordCommand {
                 ZonedDateTime date = gregorianCalendar.toZonedDateTime();
                 gregorianCalendar.add(Calendar.HOUR, 23);
                 ZonedDateTime midnight = gregorianCalendar.toZonedDateTime();
-                ArrayList<UnivClass> univSchedule = UnivHelper.getUnivSchedule(date, midnight);
-                if (univSchedule.size() == 0) {
+                ArrayList<UnivClass> univSchedule = null;
+                try {
+                    univSchedule = MultiHelper.getUnivSchedule(Raymond.getInstance().getMultiClient(), date, midnight);
+                } catch (IOException | URISyntaxException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (univSchedule.isEmpty()) {
                     EmbedCrafter embedCrafter = new EmbedCrafter(Raymond.getInstance());
                     embedCrafter.setColor(Color.RED);
                     embedCrafter.setTitle("Aucun cours :x:");
@@ -53,9 +61,9 @@ public class CommandSchedule implements DiscordCommand {
 
                     List<MessageCreateAction> messageActions = univSchedule.stream().map(univClass -> {
                         MessageCreateAction messageCreateAction = slashCommandInteractionEvent.getChannel()
-                                .sendMessageEmbeds(univClass.toEmbed().build());
+                                .sendMessageEmbeds(DiscordUnivUtils.toEmbed(univClass).build());
 
-                        univClass.toActionRow().forEach(itemComponents -> messageCreateAction.addActionRow(itemComponents.getComponents()));
+                        DiscordUnivUtils.toActionRow(univClass).forEach(itemComponents -> messageCreateAction.addActionRow(itemComponents.getComponents()));
                         return messageCreateAction;
                     }).toList();
 

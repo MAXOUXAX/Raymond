@@ -1,5 +1,6 @@
 package me.maxouxax.raymond.schedule;
 
+import me.maxouxax.multi4j.schedule.UnivClass;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 

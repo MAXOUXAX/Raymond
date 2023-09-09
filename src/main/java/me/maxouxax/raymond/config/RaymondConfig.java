@@ -1,21 +1,22 @@
 package me.maxouxax.raymond.config;
 
+import me.maxouxax.multi4j.MultiConfig;
 import me.maxouxax.supervisor.supervised.Config;
 
 public class RaymondConfig extends Config {
 
-    private UnivConfig univConfig;
+    private MultiConfig multiConfig;
 
     public RaymondConfig() {
         super();
     }
 
-    public UnivConfig getUnivConfig() {
-        return univConfig;
+    public MultiConfig getMultiConfig() {
+        return multiConfig;
     }
 
-    public void setUnivConfig(UnivConfig univConfig) {
-        this.univConfig = univConfig;
+    public void setMultiConfig(MultiConfig multiConfig) {
+        this.multiConfig = multiConfig;
     }
 
 }
