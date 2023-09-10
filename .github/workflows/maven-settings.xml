@@ -35,6 +35,16 @@
                         <enabled>true</enabled>
                     </releases>
                 </repository>
+                <repository>
+                    <id>github-raymond</id>
+                    <url>https://maven.pkg.github.com/maxouxax/raymond</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
             </repositories>
         </profile>
     </profiles>
@@ -42,27 +52,16 @@
     <servers>
         <server>
             <id>github-supervisor</id>
-            <configuration>
-                <httpHeaders>
-                    <property>
-                        <name>Authorization</name>
-                        <value>Bearer ${env.ACCESS_TOKEN}</value>
-                    </property>
-                </httpHeaders>
-            </configuration>
             <username>${env.USER_NAME}</username>
             <password>${env.ACCESS_TOKEN}</password>
         </server>
         <server>
             <id>github-multi4j</id>
-            <configuration>
-                <httpHeaders>
-                    <property>
-                        <name>Authorization</name>
-                        <value>Bearer ${env.ACCESS_TOKEN}</value>
-                    </property>
-                </httpHeaders>
-            </configuration>
+            <username>${env.USER_NAME}</username>
+            <password>${env.ACCESS_TOKEN}</password>
+        </server>
+        <server>
+            <id>github-raymond</id>
             <username>${env.USER_NAME}</username>
             <password>${env.ACCESS_TOKEN}</password>
         </server>
