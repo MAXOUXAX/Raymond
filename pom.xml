@@ -56,7 +56,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>me.maxouxax.multi4j</groupId>
+            <groupId>me.maxouxax</groupId>
             <artifactId>multi4j</artifactId>
             <version>1.1.0-RELEASE</version>
         </dependency>
