@@ -24,16 +24,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
+          cache: 'maven'
 
-      - name: Build with Maven
-        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -B package --file pom.xml
+      - name: Build and deploy to GitHub Packages
+        run: mvn deploy -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -B
         env:
           USER_NAME: ${{ secrets.USER_NAME }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
-      - name: Publish to GitHub Packages Apache Maven
-        run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-        env:
           GITHUB_TOKEN: ${{ github.token }}
