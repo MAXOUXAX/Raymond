@@ -6,7 +6,6 @@ import me.maxouxax.supervisor.interactions.modals.DiscordModalInteraction;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.ScheduledEvent;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.requests.restaction.ScheduledEventAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
@@ -15,14 +14,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class EventCreateMessageInteraction implements DiscordModalInteraction {
 
-    private SimpleDateFormat eventDateFormat = new SimpleDateFormat("EEEE dd MMMM", Locale.FRANCE);
-    private SimpleDateFormat eventHourFormat = new SimpleDateFormat("HH:mm", Locale.FRANCE);
+    private final DateTimeFormatter eventDateFormat = DateTimeFormatter.ofPattern("EEEE dd MMMM", Locale.FRANCE);
+    private final DateTimeFormatter eventHourFormat = DateTimeFormatter.ofPattern("HH:mm", Locale.FRANCE);
     private ZoneId paris = ZoneId.of("Europe/Paris");
     private final Raymond raymond;
 
@@ -47,6 +47,8 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
 
     @Override
     public void onModalSubmit(ModalInteractionEvent event) {
+        event.deferReply().queue();
+
         String name = event.getValue("event-name").getAsString();
         String location = event.getValue("event-location").getAsString();
         String description = event.getValue("event-description").getAsString();
@@ -59,7 +61,7 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
         ForumChannel forumChannel;
 
         if (forumChannelId == null || (forumChannel = event.getGuild().getForumChannelById(forumChannelId)) == null) {
-            event.reply("Le forum n'a pas été configuré, utilisez /event set-channel pour le configurer").setEphemeral(true).queue();
+            event.getHook().sendMessage("Le forum n'a pas été configuré, utilisez /event set-channel pour le configurer").setEphemeral(true).queue();
             return;
         }
 
@@ -71,34 +73,42 @@ public class EventCreateMessageInteraction implements DiscordModalInteraction {
             Date endDate = dateFormat.parse(endDateString);
             OffsetDateTime start = OffsetDateTime.ofInstant(startDate.toInstant(), paris);
             OffsetDateTime end = OffsetDateTime.ofInstant(endDate.toInstant(), paris);
+            boolean sameDay = start.getDayOfMonth() == end.getDayOfMonth() && start.getMonth() == end.getMonth() && start.getYear() == end.getYear();
 
             ScheduledEventAction action = event.getGuild().createScheduledEvent(name, location, start, end).setDescription(description);
             ScheduledEvent scheduledEvent = action.complete();
 
             String eventLink = "https://discord.com/events/" + event.getGuild().getId() + "/" + scheduledEvent.getId();
-            String eventDates = eventDateFormat.format(start);
-            if (start.getYear() == end.getYear() && start.getMonth() == end.getMonth() && start.getDayOfMonth() == end.getDayOfMonth()) {
-                eventDates += " de " + eventHourFormat.format(start) + " à " + eventHourFormat.format(end);
-            } else {
-                eventDates += " à " + eventHourFormat.format(start) + " - " + eventDateFormat.format(end) + " à " + eventHourFormat.format(end);
+            String sameDayString = eventDateFormat.format(start) + " de " + eventHourFormat.format(start) + " à " + eventHourFormat.format(end);
+            String startString = eventDateFormat.format(start) + " à " + eventHourFormat.format(start);
+            String endString = eventDateFormat.format(end) + " à " + eventHourFormat.format(end);
+
+            Role role = event.getGuild().getRoleById(serverConfig.getDiscordForumRoleId());
+
+            String startTimestamp = "<t:" + start.toEpochSecond() + ":R>";
+            String[] lines = description.split("\n");
+            StringBuilder formattedDescription = new StringBuilder("> 📝 " + lines[0] + "\n");
+
+            for (int i = 1; i < lines.length; i++) {
+                formattedDescription.append("> ").append(lines[i]).append("\n");
             }
 
-            forumChannel.createForumPost(name, new MessageCreateBuilder()
-                .addContent("# " + eventDates + "\n")
-                .addContent("## " + scheduledEvent.getLocation() + "\n")
-                .addContent("\n")
-                .addContent(description + "\n")
-                .addContent("\n")
-                .addContent("Événement Discord: " + eventLink)
-                .build()).queue(forumPost -> {
-                  ThreadChannel thread = forumPost.getThreadChannel();
-                  Role role = thread.getGuild().getRoleById(serverConfig.getDiscordForumRoleId());
-                  thread.sendMessage("@silent Nouvel événement ! " + (role != null ? role.getAsMention() : "")).queue();
-              });
+            MessageCreateBuilder message = new MessageCreateBuilder().addContent("# 🗓️ " + startTimestamp + "\n").addContent("## 📍 " + scheduledEvent.getLocation() + "\n").addContent(formattedDescription.toString()).addContent("\n\n").addContent("--").addContent("\n\n");
+            if (sameDay) {
+                message.addContent("🗓️ **Date**\n").addContent("> " + sameDayString + "\n");
+            } else {
+                message.addContent("🗓️ **Début**\n").addContent("> " + startString + "\n").addContent("🗓️ **Fin**\n").addContent("> " + endString + "\n");
+            }
+            message.addContent("\n\n").addContent("> 🔔 Événement Discord\n").addContent("> " + eventLink + "\n");
+            if (role != null) message.addContent("> " + role.getAsMention());
 
-            event.reply("L'événement a bien été créé !").queue();
+            message.setSuppressedNotifications(true);
+
+            forumChannel.createForumPost(name, message.build()).queue(forumPost -> {
+                event.getHook().sendMessage("Salon de forum et événement créés!\nPost: " + forumPost.getThreadChannel().getJumpUrl()).queue();
+            });
         } catch (ParseException e) {
-            event.reply("Une erreur est survenue lors de la création de l'événement").setEphemeral(true).queue();
+            event.getHook().sendMessage("Une erreur est survenue lors de la création de l'événement").setEphemeral(true).queue();
         }
     }
 
