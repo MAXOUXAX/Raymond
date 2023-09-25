@@ -18,6 +18,8 @@ import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -27,6 +29,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class Raymond extends Supervised {
 
     private static Raymond instance;
+    private Logger logger;
     private String version;
     private MultiClient multiClient;
     private ScheduledExecutorService scheduledExecutorService;
@@ -48,6 +51,7 @@ public class Raymond extends Supervised {
     public void onEnable() {
         instance = this;
         this.serverConfigsManager = new RaymondServerConfigsManager();
+        this.logger = LoggerFactory.getLogger(Raymond.class);
         super.onEnable();
 
         saveDefaultConfig();
@@ -60,8 +64,9 @@ public class Raymond extends Supervised {
 
         try {
             this.multiClient.connect();
+            logger.info("Successfully connected to Multi4J");
         } catch (MultiLoginException e) {
-            throw new RuntimeException(e);
+            logger.error("An error occurred while connecting to Multi4J", e);
         }
 
         try {
