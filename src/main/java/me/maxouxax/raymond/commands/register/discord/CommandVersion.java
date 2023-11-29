@@ -30,7 +30,7 @@ public class CommandVersion implements DiscordCommand {
     public void onRootCommand(MessageChannelUnion textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent) {
         try {
             EmbedCrafter embedCrafter = new EmbedCrafter(raymond);
-            embedCrafter.setTitle("Raymond by MAXOUXAX — Équipier polyvalent", raymond.getConfig().getWebsiteUrl())
+            embedCrafter.setTitle("Raymond by MAXOUXAX", raymond.getConfig().getWebsiteUrl())
                     .setColor(3447003)
                     .addField("Je suis en version", raymond.getVersion(), true)
                     .addField("Je gère", Supervisor.getInstance().getInteractionManager().getDiscordCommandsFromSupervised(raymond).size() + " commandes Discord", true);
