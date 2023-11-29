@@ -34,6 +34,11 @@ public class CommandCrous implements DiscordCommand {
     }
 
     @Override
+    public void onRootCommand(MessageChannelUnion messageChannelUnion, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent) {
+        slashCommandInteractionEvent.reply("Vous devez utiliser une sous-commande").setEphemeral(true).queue();
+    }
+
+    @Override
     public String name() {
         return "crous";
     }
@@ -43,8 +48,8 @@ public class CommandCrous implements DiscordCommand {
         return "Récupère le menu du CROUS";
     }
 
-    @Override
-    public void onRootCommand(MessageChannelUnion messageChannelUnion, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent) {
+    @Subcommand(name = "query", description = "Récupère le menu du CROUS du jour")
+    public void onQuery(MessageChannelUnion messageChannelUnion, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent) {
         UnivServerConfig serverConfig =
                 raymond.getServerConfigsManager().getServerConfig(member.getGuild().getId()).getUnivServerConfig();
         String restaurantName = serverConfig.getCrousRestaurantName();
