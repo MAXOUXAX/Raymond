@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -50,6 +51,8 @@ public class Raymond extends Supervised {
     @Override
     public void onEnable() {
         instance = this;
+        Instant start = Instant.now();
+
         this.serverConfigsManager = new RaymondServerConfigsManager();
         this.logger = LoggerFactory.getLogger(Raymond.class);
         super.onEnable();
@@ -77,7 +80,7 @@ public class Raymond extends Supervised {
             jda.awaitReady();
             super.bindListeners();
         } catch (IllegalArgumentException | NullPointerException | InterruptedException e) {
-            e.printStackTrace();
+            logger.error("An error occurred while connecting to Discord", e);
         }
 
         List<ConsoleCommand> consoleCommands = Arrays.asList(
@@ -111,12 +114,11 @@ public class Raymond extends Supervised {
                 new EventCreateMessageInteraction()
         );
 
-        discordMessageInteractions.forEach(discordMessageInteraction -> {
-            supervisor.getInteractionManager().registerMessageInteraction(this, discordMessageInteraction);
-        });
-        discordModalInteractions.forEach(discordModalInteraction -> {
-            supervisor.getInteractionManager().registerModalInteraction(this, discordModalInteraction);
-        });
+        discordMessageInteractions.forEach(discordMessageInteraction -> supervisor.getInteractionManager().registerMessageInteraction(this, discordMessageInteraction));
+        discordModalInteractions.forEach(discordModalInteraction -> supervisor.getInteractionManager().registerModalInteraction(this, discordModalInteraction));
+
+        Instant end = Instant.now();
+        logger.info("Raymond is ready! (took {}s)", (end.getEpochSecond() - start.getEpochSecond()));
     }
 
     @Override
