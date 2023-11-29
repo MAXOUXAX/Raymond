@@ -7,27 +7,31 @@ import me.maxouxax.multi4j.crous.CrousRestaurant;
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 
 public class CrousUtils {
 
     private static final Raymond raymond = Raymond.getInstance();
 
-    public static EmbedCrafter buildEmbedFromCrous(CrousRestaurant restaurant, CrousMenu menu){
+    public static EmbedCrafter buildEmbedFromCrous(CrousRestaurant restaurant, CrousMenu menu) {
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond);
-        embedCrafter.setTitle("Menu du " + menu.getDate().toString() + " | " + restaurant.getName());
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.FRANCE);
+
+        embedCrafter.setTitle("Menu du " + format.format(menu.getDate().toInstant()) + " | " + restaurant.getName());
         embedCrafter.setThumbnailUrl(restaurant.getThumbnailUrl());
 
         StringBuilder description = new StringBuilder();
         for (CrousMeal meal : menu.getMeals()) {
             for (CrousFoodCategory foodCategory : meal.getFoodCategories()) {
-                description.append("## Menu du ").append(meal.getName()).append("\n");
-                description.append("### ").append(foodCategory.getName()).append("\n");
+                description.append("## ⏲️ Menu du ").append(meal.getName()).append("\n");
+                description.append("### ➡️ ").append(foodCategory.getName()).append("\n");
                 for (String dish : foodCategory.getDishes()) {
                     // Skip empty dishes
-                    if(dish.trim().equalsIgnoreCase("")) continue;
+                    if (dish.trim().equalsIgnoreCase("")) continue;
 
                     description.append("- ").append(dish).append("\n");
                 }
