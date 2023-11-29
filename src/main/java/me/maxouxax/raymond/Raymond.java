@@ -9,7 +9,9 @@ import me.maxouxax.raymond.commands.register.console.CommandConsoleSay;
 import me.maxouxax.raymond.commands.register.discord.*;
 import me.maxouxax.raymond.config.RaymondConfig;
 import me.maxouxax.raymond.config.RaymondServerConfigsManager;
+import me.maxouxax.raymond.helpers.ScheduledJobsHelper;
 import me.maxouxax.raymond.listeners.DiscordListener;
+import me.maxouxax.raymond.tasks.TaskSendCrousMenu;
 import me.maxouxax.supervisor.interactions.commands.ConsoleCommand;
 import me.maxouxax.supervisor.interactions.commands.DiscordCommand;
 import me.maxouxax.supervisor.interactions.message.DiscordMessageInteraction;
@@ -117,6 +119,9 @@ public class Raymond extends Supervised {
         discordMessageInteractions.forEach(discordMessageInteraction -> supervisor.getInteractionManager().registerMessageInteraction(this, discordMessageInteraction));
         discordModalInteractions.forEach(discordModalInteraction -> supervisor.getInteractionManager().registerModalInteraction(this, discordModalInteraction));
 
+        TaskSendCrousMenu taskSendCrousMenu = new TaskSendCrousMenu(this);
+        ScheduledJobsHelper.scheduleAt(10, 0, taskSendCrousMenu);
+
         Instant end = Instant.now();
         logger.info("Raymond is ready! (took {}s)", (end.getEpochSecond() - start.getEpochSecond()));
     }
@@ -130,11 +135,20 @@ public class Raymond extends Supervised {
     public void onDisable() {
         jda.getPresence().setActivity(Activity.playing("Arrêt en cours..."));
         jda.shutdown();
+        try {
+            ScheduledJobsHelper.stop();
+        } catch (InterruptedException e) {
+            logger.error("An error occurred while stopping scheduled jobs", e);
+        }
     }
 
     @Override
     public RaymondConfig getConfig() {
         return (RaymondConfig) super.getConfig();
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     @Override
