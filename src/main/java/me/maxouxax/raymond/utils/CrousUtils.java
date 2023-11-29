@@ -7,6 +7,7 @@ import me.maxouxax.multi4j.crous.CrousRestaurant;
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +22,9 @@ public class CrousUtils {
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.FRANCE);
 
-        embedCrafter.setTitle("Menu du " + format.format(menu.getDate().toInstant()) + " | " + restaurant.getName());
+        LocalDate menuDate = menu.getDate().toInstant().atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalDate();
+
+        embedCrafter.setTitle("Menu du " + format.format(menuDate) + " | " + restaurant.getName());
         embedCrafter.setThumbnailUrl(restaurant.getThumbnailUrl());
 
         StringBuilder description = new StringBuilder();
