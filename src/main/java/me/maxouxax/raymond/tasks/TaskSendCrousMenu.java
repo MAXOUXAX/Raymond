@@ -6,6 +6,7 @@ import me.maxouxax.multi4j.crous.CrousRestaurant;
 import me.maxouxax.raymond.Raymond;
 import me.maxouxax.raymond.utils.CrousUtils;
 import me.maxouxax.supervisor.utils.EmbedCrafter;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.Optional;
@@ -26,6 +27,10 @@ public class TaskSendCrousMenu implements Runnable {
             TextChannel crousMenuChannel = guild.getTextChannelById(raymond.getServerConfigsManager().getServerConfig(guild.getId()).getUnivServerConfig().getDiscordCrousMenuChannelId());
             if (crousMenuChannel == null) return;
 
+            Role crousRole =
+                    guild.getRoleById(raymond.getServerConfigsManager().getServerConfig(guild.getId()).getUnivServerConfig().getDiscordCrousMenuRoleId());
+            if (crousRole == null) return;
+
             try {
                 CrousRestaurant restaurantDetails = MultiHelper.getRestaurantDetails(raymond.getMultiClient(), restaurantName);
                 Optional<CrousMenu> todaysMenu = CrousUtils.findTodaysMenu(restaurantDetails);
@@ -34,7 +39,8 @@ public class TaskSendCrousMenu implements Runnable {
                 } else {
                     CrousMenu menu = todaysMenu.get();
                     EmbedCrafter embed = CrousUtils.buildEmbedFromCrous(restaurantDetails, menu);
-                    crousMenuChannel.sendMessageEmbeds(embed.build()).queue();
+
+                    crousMenuChannel.sendMessage(crousRole.getAsMention()).addEmbeds(embed.build()).queue();
                 }
             } catch (Exception e) {
                 raymond.getLogger().error("Failed to send CROUS menu for guild " + guild.getId() + " (" + guild.getName() + ")", e);
