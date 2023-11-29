@@ -3,6 +3,7 @@ package me.maxouxax.raymond;
 import me.maxouxax.multi4j.MultiClient;
 import me.maxouxax.multi4j.exceptions.MultiLoginException;
 import me.maxouxax.raymond.commands.interactions.EventCreateMessageInteraction;
+import me.maxouxax.raymond.commands.interactions.SelfRolesInteraction;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleHelp;
 import me.maxouxax.raymond.commands.register.console.CommandConsolePower;
 import me.maxouxax.raymond.commands.register.console.CommandConsoleSay;
@@ -104,15 +105,18 @@ public class Raymond extends Supervised {
                 new CommandSendRules(this),
                 new CommandUnarchive(),
                 new CommandVersion(this),
-                new CommandEvent()
+                new CommandEvent(),
+                new CommandCrous()
         );
         discordCommands.forEach(discordCommand -> supervisor.getInteractionManager().registerCommand(this, discordCommand));
 
         supervisor.getInteractionManager().updateCommands(this);
 
-        List<DiscordMessageInteraction> discordMessageInteractions = Arrays.asList();
+        List<DiscordMessageInteraction> discordMessageInteractions = List.of(
+                new SelfRolesInteraction()
+        );
 
-        List<DiscordModalInteraction> discordModalInteractions = Arrays.asList(
+        List<DiscordModalInteraction> discordModalInteractions = List.of(
                 new EventCreateMessageInteraction()
         );
 
