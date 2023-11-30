@@ -18,7 +18,7 @@ public class CrousUtils {
 
     private static final Raymond raymond = Raymond.getInstance();
 
-    public static EmbedCrafter buildEmbedFromCrous(CrousRestaurant restaurant, CrousMenu menu) {
+    public static EmbedCrafter buildEmbedFromMenu(CrousRestaurant restaurant, CrousMenu menu) {
         EmbedCrafter embedCrafter = new EmbedCrafter(raymond);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.FRANCE);
 
