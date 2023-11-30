@@ -65,7 +65,7 @@ public class CommandCrous implements DiscordCommand {
                 slashCommandInteractionEvent.reply("Aucun menu disponible pour aujourd'hui :(").queue();
             } else {
                 CrousMenu menu = todaysMenu.get();
-                EmbedCrafter embedCrafter = CrousUtils.buildEmbedFromCrous(restaurantDetails, menu);
+                EmbedCrafter embedCrafter = CrousUtils.buildEmbedFromMenu(restaurantDetails, menu);
                 slashCommandInteractionEvent.replyEmbeds(embedCrafter.build()).queue();
             }
         } catch (IOException | URISyntaxException | InterruptedException | ParseException e) {

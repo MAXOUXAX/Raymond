@@ -38,7 +38,7 @@ public class TaskSendCrousMenu implements Runnable {
                     crousMenuChannel.sendMessage("Aucun menu disponible pour aujourd'hui :(").queue();
                 } else {
                     CrousMenu menu = todaysMenu.get();
-                    EmbedCrafter embed = CrousUtils.buildEmbedFromCrous(restaurantDetails, menu);
+                    EmbedCrafter embed = CrousUtils.buildEmbedFromMenu(restaurantDetails, menu);
 
                     crousMenuChannel.sendMessage(crousRole.getAsMention()).addEmbeds(embed.build()).queue();
                 }
