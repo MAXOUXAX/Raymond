@@ -29,8 +29,8 @@ public class CrousUtils {
 
         StringBuilder description = new StringBuilder();
         for (CrousMeal meal : menu.getMeals()) {
+            description.append("## ⏲️ Menu du ").append(meal.getName()).append("\n");
             for (CrousFoodCategory foodCategory : meal.getFoodCategories()) {
-                description.append("## ⏲️ Menu du ").append(meal.getName()).append("\n");
                 description.append("### ➡️ ").append(foodCategory.getName()).append("\n");
                 for (String dish : foodCategory.getDishes()) {
                     // Skip empty dishes
