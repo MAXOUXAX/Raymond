@@ -6,7 +6,7 @@
 
     <groupId>me.maxouxax</groupId>
     <artifactId>raymond</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
 
     <build>
         <plugins>
