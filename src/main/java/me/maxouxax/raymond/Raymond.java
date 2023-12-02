@@ -24,10 +24,12 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class Raymond extends Supervised {
@@ -124,7 +126,7 @@ public class Raymond extends Supervised {
         discordModalInteractions.forEach(discordModalInteraction -> supervisor.getInteractionManager().registerModalInteraction(this, discordModalInteraction));
 
         TaskSendCrousMenu taskSendCrousMenu = new TaskSendCrousMenu(this);
-        ScheduledJobsHelper.scheduleAt(10, 0, taskSendCrousMenu);
+        ScheduledJobsHelper.scheduleAtDays(10, 0, 0, Set.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY), taskSendCrousMenu);
 
         Instant end = Instant.now();
         logger.info("Raymond is ready! (took {}s)", (end.getEpochSecond() - start.getEpochSecond()));
